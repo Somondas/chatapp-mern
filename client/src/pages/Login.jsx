@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import { Camera as CameraAltIcon } from "@mui/icons-material";
+import { VisuallyHiddenInput } from "../components/styles/StyledComponents";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -97,10 +98,22 @@ const Login = () => {
                     objectFit: "contain",
                   }}
                 />
-                <IconButton>
+                <IconButton
+                  sx={{
+                    position: "absolute",
+                    // top: "0.5rem",
+                    bottom: "0",
+                    right: "0",
+                    bgcolor: "rgba(255, 255, 255, 0.5)",
+                    ":hover": {
+                      bgcolor: "rgba(255, 255, 255, 0.75)",
+                    },
+                  }}
+                  component="label"
+                >
                   <>
                     <CameraAltIcon />
-                    <VisuallyHidden>Upload Avatar</VisuallyHidden>
+                    <VisuallyHiddenInput type="file" />
                   </>
                 </IconButton>
               </Stack>
