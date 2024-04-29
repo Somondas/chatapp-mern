@@ -6,7 +6,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { Suspense, lazy, useState } from "react";
 import { orange } from "../../constants/color";
 import {
   Menu as MenuIcon,
@@ -17,6 +17,10 @@ import {
   Add as AddIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+const SearchDialog = lazy(() => import("../specific/Search"));
+const NewGroupDialog = lazy(() => import("../specific/NewGroup"));
+const NotificationDialog = lazy(() => import("../specific/Notifications"));
+
 // |__________________________________________________________
 const Header = () => {
   const navigate = useNavigate();
@@ -107,6 +111,21 @@ const Header = () => {
           </Toolbar>
         </AppBar>
       </Box>
+      {isSearch && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <SearchDialog />
+        </Suspense>
+      )}
+      {isNotification && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <NotificationDialog />
+        </Suspense>
+      )}
+      {isNewGroup && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <NewGroupDialog />
+        </Suspense>
+      )}
     </>
   );
 };
