@@ -13,28 +13,40 @@ import {
   Search as SearchIcon,
   Group as GroupIcon,
   Logout as LogoutIcon,
+  Notifications as NotificationsIcon,
   Add as AddIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 // |__________________________________________________________
 const Header = () => {
   const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(false);
+  const [isSearch, setIsSearch] = useState(false);
+  const [isNewGroup, setIsNewGroup] = useState(false);
+  const [isNotification, setIsNotification] = useState(false);
 
   // >> Handling Functions------------------------------
   const handleMobile = () => {
     console.log("handleMobile");
+    setIsMobile((prev) => !prev);
   };
   const openSearchDialog = () => {
     console.log("openSearchDialog");
+    setIsSearch((prev) => !prev);
   };
   const openNewGroup = () => {
     console.log("openNewGroup");
+    setIsNewGroup((prev) => !prev);
   };
   const navigateToGroup = () => {
     navigate("/groups");
   };
   const logoutHandler = () => {
     console.log("logoutHandler");
+  };
+  const openNotification = () => {
+    console.log("openNotification");
+    setIsNotification((prev) => !prev);
   };
   // >>----------------------------------------------------
   return (
@@ -85,6 +97,11 @@ const Header = () => {
                 title={"Logout"}
                 icon={<LogoutIcon />}
                 onClick={logoutHandler}
+              />
+              <IconBtn
+                title={"Notifications"}
+                icon={<NotificationsIcon />}
+                onClick={openNotification}
               />
             </Box>
           </Toolbar>
