@@ -6,37 +6,28 @@ const Home = lazy(() => import("./pages/Home.jsx"));
 const Login = lazy(() => import("./pages/Login.jsx"));
 const Chat = lazy(() => import("./pages/Chat.jsx"));
 const Groups = lazy(() => import("./pages/Groups.jsx"));
+const NotFound = lazy(() => import("./pages/NotFound.jsx"));
 
 const App = () => {
   const user = true;
   return (
     <BrowserRouter>
       <Routes>
+        <Route element={<ProtectRoute user={user} />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/chat/:chatId" element={<Chat />} />
+          <Route path="/groups" element={<Groups />} />
+          {/* <Route path="/login" element={<Login />} /> */}
+        </Route>
         <Route
-          path="/"
+          path="/login"
           element={
-            <ProtectRoute user={user}>
-              <Home />
+            <ProtectRoute user={!user} redirect={"/"}>
+              <Login />
             </ProtectRoute>
           }
         />
-        <Route
-          path="/chat/:chatId"
-          element={
-            <ProtectRoute user={user}>
-              <Chat />
-            </ProtectRoute>
-          }
-        />
-        <Route
-          path="/groups"
-          element={
-            <ProtectRoute user={user}>
-              <Groups />
-            </ProtectRoute>
-          }
-        />
-        <Route path="/login" element={<Login />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
