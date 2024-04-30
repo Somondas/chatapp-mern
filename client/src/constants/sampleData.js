@@ -11,7 +11,7 @@ export const samepleChats = [
     avatar: ["https://www.w3schools.com/howto/img_avatar.png"],
     name: "John Boi",
     _id: "2",
-    groupChat: true,
+    groupChat: false,
     members: ["1", "2"],
   },
 ];
