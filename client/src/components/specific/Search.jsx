@@ -2,12 +2,18 @@ import {
   Dialog,
   DialogTitle,
   InputAdornment,
+  List,
+  ListItem,
+  ListItemText,
   Stack,
   TextField,
 } from "@mui/material";
 import React from "react";
 import { useInputValidation } from "6pp";
 import { Search as SearchIcon } from "@mui/icons-material";
+// |===========================================================
+
+const users = [];
 const SearchDialog = () => {
   const search = useInputValidation("");
   return (
@@ -15,7 +21,6 @@ const SearchDialog = () => {
       <Stack direction={"column"} p={"2rem"} width={"25rem"}>
         <DialogTitle textAlign={"center"}>Find People</DialogTitle>
         <TextField
-          id=""
           label=""
           value={search.value}
           onChange={search.changeHandler}
@@ -29,6 +34,13 @@ const SearchDialog = () => {
             ),
           }}
         />
+        <List>
+          {users.map((user) => (
+            <ListItem>
+              <ListItemText primary={users.name} secondary={users.email} />
+            </ListItem>
+          ))}
+        </List>
       </Stack>
     </Dialog>
   );
