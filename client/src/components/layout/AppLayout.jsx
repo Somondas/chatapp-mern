@@ -42,15 +42,7 @@ const AppLayout = () => (WrappedComponent) => {
               handleDeleteChat={handleDeleteChat}
             />
           </Grid>
-          <Grid
-            item
-            xs={12}
-            md={5}
-            sm={8}
-            lg={6}
-            height={"100%"}
-            bgcolor={"primary.main"}
-          >
+          <Grid item xs={12} md={5} sm={8} lg={6} height={"100%"}>
             <WrappedComponent {...props} />
           </Grid>
           <Grid

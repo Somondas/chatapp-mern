@@ -1,18 +1,16 @@
-import React, { memo, useState } from "react";
+import { useInputValidation } from "6pp";
 import {
-  Avatar,
   Button,
   Dialog,
   DialogTitle,
-  ListItem,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import UserItem from "../shared/UserItem";
+import React, { useState } from "react";
 import { sampleUsers } from "../../constants/sampleData";
-import { useInputValidation } from "6pp";
-
+import UserItem from "../shared/UserItem";
+// ! Use Alt + Shift + O shortcut to remove unneccesary imports
 const NewGroupDialog = () => {
   const groupName = useInputValidation("");
 
@@ -34,6 +32,9 @@ const NewGroupDialog = () => {
   console.log(selectedMembers);
   const submitHandler = () => {
     console.log("submitHandler");
+  };
+  const closeHandler = () => {
+    console.log("closeHandler");
   };
   return (
     <Dialog open>
