@@ -8,17 +8,33 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { useInputValidation } from "6pp";
 import { Search as SearchIcon } from "@mui/icons-material";
+import UserItem from "../shared/UserItem";
+import { sampleUsers } from "../../constants/sampleData";
+import { orange } from "@mui/material/colors";
+import { orangeLight } from "../../constants/color";
 // |===========================================================
 
-const users = [];
 const SearchDialog = () => {
   const search = useInputValidation("");
+
+  const [users, setUsers] = useState(sampleUsers);
+  const addFriendHandler = (id) => {
+    console.log(id);
+  };
+  let isLoadingSendFriendRequest = false;
   return (
     <Dialog open>
-      <Stack direction={"column"} p={"2rem"} width={"25rem"}>
+      <Stack
+        sx={{
+          borderBottom: `.5rem solid #ea7070`,
+        }}
+        direction={"column"}
+        p={"2rem"}
+        width={"25rem"}
+      >
         <DialogTitle textAlign={"center"}>Find People</DialogTitle>
         <TextField
           label=""
@@ -36,9 +52,12 @@ const SearchDialog = () => {
         />
         <List>
           {users.map((user) => (
-            <ListItem>
-              <ListItemText primary={users.name} secondary={users.email} />
-            </ListItem>
+            <UserItem
+              key={user._id}
+              user={user}
+              handler={addFriendHandler}
+              handlerIsLoading={isLoadingSendFriendRequest}
+            />
           ))}
         </List>
       </Stack>
