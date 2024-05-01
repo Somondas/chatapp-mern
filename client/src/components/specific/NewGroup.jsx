@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import {
   Avatar,
   Button,
@@ -19,9 +19,19 @@ const NewGroupDialog = () => {
   const [members, setMembers] = useState(sampleUsers);
   const [selectedMembers, setSelectedMembers] = useState([]);
 
-  const selectMemberHandler = () => {
-    console.log("selectMemberHabldler");
+  const selectMemberHandler = (id) => {
+    // setMembers((prev) =>
+    //   prev.map((user) =>
+    //     user._id === id ? { ...user, isAdded: !user.isAdded } : user
+    //   )
+    // );
+    setSelectedMembers((prev) =>
+      prev.includes(id)
+        ? prev.filter((currentElement) => currentElement !== id)
+        : [...prev, id]
+    );
   };
+  console.log(selectedMembers);
   const submitHandler = () => {
     console.log("submitHandler");
   };
@@ -40,11 +50,12 @@ const NewGroupDialog = () => {
         </Typography>
 
         <Stack pt={"1rem"}>
-          {sampleUsers.map((user) => (
+          {members.map((user) => (
             <UserItem
               key={user._id}
               user={user}
               handler={selectMemberHandler}
+              isAdded={selectedMembers.includes(user._id)}
             />
           ))}
         </Stack>
@@ -52,7 +63,7 @@ const NewGroupDialog = () => {
           <Button variant="text" color={"error"}>
             Cancel
           </Button>
-          <Button variant="contained" onClick={submitHanlder}>
+          <Button variant="contained" onClick={submitHandler}>
             Create
           </Button>
         </Stack>
