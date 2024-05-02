@@ -1,4 +1,6 @@
 import React from "react";
+import { transformImage } from "../../lib/features";
+import { FileOpen as FileOpenIcon } from "@mui/icons-material";
 
 const RenderAttachment = (file, url) => {
   switch (file) {
@@ -6,7 +8,23 @@ const RenderAttachment = (file, url) => {
       return <video src={url} controls width={"200px"} />;
       break;
     case "image":
-      return <img src={url} alt="Attachment" />;
+      return (
+        <img
+          src={transformImage(url, 200)}
+          alt="Attachment"
+          width={"200px"}
+          height={"150px"}
+          style={{
+            objectFit: "contain",
+          }}
+        />
+      );
+      break;
+    case "audio":
+      return <video src={url} controls width={"200px"} />;
+      break;
+    default:
+      return <FileOpenIcon />;
   }
 };
 

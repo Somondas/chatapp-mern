@@ -66,7 +66,7 @@ export const sampleMessage = [
         url: "https://www.w3schools.com/howto/img_avatar.png",
       },
     ],
-    content: "Tu mera lele",
+    // content: "Tu mera lele",
     _id: "sfnsdjkfsdnfkdddjsbnd",
     sender: {
       _id: "klsfwi49e",

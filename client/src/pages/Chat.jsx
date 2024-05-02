@@ -35,7 +35,7 @@ const Chat = () => {
       >
         {/* Message Render */}
         {sampleMessage.map((i) => (
-          <MessageComponent message={i} user={user} />
+          <MessageComponent message={i} key={i._id} user={user} />
         ))}
       </Stack>
       <form
