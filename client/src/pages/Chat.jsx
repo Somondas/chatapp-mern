@@ -7,9 +7,18 @@ import {
   Send as SendIcon,
 } from "@mui/icons-material";
 import { InputBox } from "../components/styles/StyledComponents";
+import FileMenu from "../components/dialogs/FileMenu";
+import { sampleMessage } from "../constants/sampleData";
+import MessageComponent from "../components/shared/MessageComponent";
+// |+++++++++++++++++++++++++++++++++++++++++++++++++++++=====
 
+const user = {
+  _id: "klsfwi49e",
+  name: "Kim",
+};
 const Chat = () => {
   const containerRef = useRef();
+  const fileMenuRef = useRef();
   return (
     <>
       <Stack
@@ -25,6 +34,9 @@ const Chat = () => {
         }}
       >
         {/* Message Render */}
+        {sampleMessage.map((i) => (
+          <MessageComponent message={i} user={user} />
+        ))}
       </Stack>
       <form
         style={{
@@ -38,7 +50,13 @@ const Chat = () => {
           alignItems={"center"}
           position={"relative"}
         >
-          <IconButton>
+          <IconButton
+            sx={{
+              position: "absolute",
+              left: "1.5rem",
+              rotate: "30deg",
+            }}
+          >
             <AttachFileIcon />
           </IconButton>
           <InputBox placeholder="Type a message" />
@@ -58,6 +76,7 @@ const Chat = () => {
           </IconButton>
         </Stack>
       </form>
+      <FileMenu />
     </>
   );
 };
