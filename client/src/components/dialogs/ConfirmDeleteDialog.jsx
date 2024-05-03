@@ -1,8 +1,10 @@
 import {
   Dialog,
+  DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Button,
 } from "@mui/material";
 import React from "react";
 
@@ -15,6 +17,12 @@ const ConfirmDeleteDialog = ({ open, handleClose, deleteHandler }) => {
           Are you sure you want to delete this group?
         </DialogContentText>
       </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>No</Button>
+        <Button onClick={deleteHandler} color="error">
+          Yes
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 };

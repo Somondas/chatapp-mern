@@ -24,13 +24,19 @@ import { Link } from "../components/styles/StyledComponents";
 import AvatarCard from "../components/shared/AvatarCard";
 import { samepleChats } from "../constants/sampleData/";
 
-const ConfirmDelteDialog = lazy(
+// -> Lazy Imports
+const ConfirmDelteDialog = lazy(() =>
   import("../components/dialogs/ConfirmDeleteDialog")
 );
+const AddMemberDialog = lazy(() =>
+  import("../components/dialogs/AddMemberDialog.jsx")
+);
+
 // >> Main Component
 const Groups = () => {
   const chatId = useSearchParams()[0].get("group");
   const navigate = useNavigate();
+  const isMember = false;
   // -> State variables------------
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -60,6 +66,9 @@ const Groups = () => {
   };
   const closeconfirmDeleteHandler = () => {
     setConfirmDeleteDialog(false);
+  };
+  const deleteHandler = () => {
+    closeconfirmDeleteHandler();
   };
   const openAddMemberHandler = () => {};
   // -> UseEffect--------------------
@@ -227,9 +236,18 @@ const Groups = () => {
             </>
           )}
         </Grid>
+        {isMember && (
+          <Suspense fallback={<Backdrop open />}>
+            <AddMemberDialog />
+          </Suspense>
+        )}
         {confirmDeleteDialog && (
           <Suspense fallback={<Backdrop open />}>
-            <ConfirmDelteDialog open={confirmDeleteDialog} />
+            <ConfirmDelteDialog
+              open={confirmDeleteDialog}
+              handleClose={closeconfirmDeleteHandler}
+              deleteHandler={deleteHandler}
+            />
           </Suspense>
         )}
         <Drawer
