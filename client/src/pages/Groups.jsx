@@ -1,4 +1,6 @@
 import {
+  Done as DoneIcon,
+  Edit as EditIcon,
   KeyboardBackspace as KeyboardBackspaceIcon,
   Menu as MenuIcon,
 } from "@mui/icons-material";
@@ -8,6 +10,7 @@ import {
   Grid,
   IconButton,
   Stack,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -24,6 +27,8 @@ const Groups = () => {
   const [isEdit, setIsEdit] = useState(false);
   const navigate = useNavigate();
   console.log(chatId);
+  // >> Functions------
+
   const navigateBack = () => {
     navigate("/");
   };
@@ -34,6 +39,7 @@ const Groups = () => {
   const handleMobileClose = () => {
     setIsMobileMenuOpen(false);
   };
+  const updateGroupName = () => {};
   // >> Icon Buttons
   const IconBtns = (
     <>
@@ -71,13 +77,29 @@ const Groups = () => {
       </Tooltip>
     </>
   );
+  // >> Group Name Component
+  // >> Current Working
   const GroupName = (
-    <Stack>
+    <Stack
+      direction={"row"}
+      alignItems={"center"}
+      justifyContent={"center"}
+      spacing={"1rem"}
+      padding={"3rem"}
+    >
       {isEdit ? (
-        <></>
+        <>
+          <TextField />
+          <IconButton onClick={updateGroupName}>
+            <DoneIcon />
+          </IconButton>
+        </>
       ) : (
         <>
           <Typography variant="h4">Group Name</Typography>
+          <IconButton onClick={() => setIsEdit(true)}>
+            <EditIcon />
+          </IconButton>
         </>
       )}
     </Stack>
