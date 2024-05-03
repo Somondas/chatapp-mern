@@ -11,13 +11,19 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
+import React, { memo, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link } from "../components/styles/StyledComponents";
+import AvatarCard from "../components/shared/AvatarCard";
+import { samepleChats } from "../constants/sampleData/";
+// >> Main Component
 const Groups = () => {
+  const chatId = useSearchParams()[0].get("group");
+  // ? State variables------------
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const navigate = useNavigate();
-
+  console.log(chatId);
   const navigateBack = () => {
     navigate("/");
   };
@@ -28,6 +34,7 @@ const Groups = () => {
   const handleMobileClose = () => {
     setIsMobileMenuOpen(false);
   };
+  // >> Icon Buttons
   const IconBtns = (
     <>
       <Box
@@ -64,6 +71,17 @@ const Groups = () => {
       </Tooltip>
     </>
   );
+  const GroupName = (
+    <Stack>
+      {isEdit ? (
+        <></>
+      ) : (
+        <>
+          <Typography variant="h4">Group Name</Typography>
+        </>
+      )}
+    </Stack>
+  );
   return (
     <>
       <Grid container height={"100vh"}>
@@ -75,7 +93,7 @@ const Groups = () => {
           sm={4}
           bgcolor={"bisque"}
         >
-          Groups
+          <GroupsList myGroups={samepleChats} chatId={chatId} />
         </Grid>
         <Grid
           item
@@ -90,6 +108,7 @@ const Groups = () => {
           sm={8}
         >
           {IconBtns}
+          {GroupName}
         </Grid>
         <Drawer
           sx={{
@@ -98,20 +117,41 @@ const Groups = () => {
           open={isMobileMenuOpen}
           onClose={handleMobileClose}
         >
-          Group List
+          <GroupsList w={"50vw"} myGroups={samepleChats} chatId={chatId} />
         </Drawer>
       </Grid>
     </>
   );
 };
-
+// >> GroupList Component________------------_________
 const GroupsList = ({ w = "100%", myGroups = [], chatId }) => (
-  <Stack>
+  <Stack weight={w}>
     {myGroups.length > 0 ? (
-      myGroups.map((group) => {})
+      myGroups.map((group) => (
+        <GroupListItem key={group._id} group={group} chatId={chatId} />
+      ))
     ) : (
       <Typography>No Groups</Typography>
     )}
   </Stack>
 );
+// >> GroupListItem Component
+const GroupListItem = memo(({ group, chatId }) => {
+  const { name, avatar, _id } = group;
+  return (
+    <Link
+      onClick={(e) => {
+        if (chatId === _id) {
+          e.preventDefault();
+        }
+      }}
+      to={`?group=${_id}`}
+    >
+      <Stack direction={"row"} spacing={"1rem"} alignItems={"center"}>
+        <AvatarCard avatar={avatar} />
+        <Typography>{name}</Typography>
+      </Stack>
+    </Link>
+  );
+});
 export default Groups;
