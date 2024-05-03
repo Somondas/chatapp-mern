@@ -36,7 +36,7 @@ const AddMemberDialog = lazy(() =>
 const Groups = () => {
   const chatId = useSearchParams()[0].get("group");
   const navigate = useNavigate();
-  const isMember = false;
+  const isMember = true;
   // -> State variables------------
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
