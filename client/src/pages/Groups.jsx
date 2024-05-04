@@ -197,6 +197,8 @@ const Groups = () => {
           sx={{
             display: { xs: "none", sm: "block" },
             backgroundImage: bgGradientBluePink,
+            overflow: "auto",
+            height: "100%",
           }}
           sm={4}
         >
@@ -236,10 +238,12 @@ const Groups = () => {
                   xs: "0",
                   md: " 1rem 4rem",
                 }}
-                spacing={"2rem"}
-                // bgcolor={"bisque"}
-                hight={"50vh"}
-                overflow={"auto"}
+                sx={{
+                  overflow: "auto",
+                  // height: "100%",
+                }}
+                height={"45vh"}
+                spacing={"1rem"}
               >
                 {sampleUsers.map((i) => (
                   <UserItem
@@ -280,14 +284,14 @@ const Groups = () => {
           open={isMobileMenuOpen}
           onClose={handleMobileClose}
         >
-          <GroupsList
+          <Stack
             sx={{
               backgroundImage: bgGradientBluePink,
+              height: "100%",
             }}
-            w={"50vw"}
-            myGroups={samepleChats}
-            chatId={chatId}
-          />
+          >
+            <GroupsList w={"50vw"} myGroups={samepleChats} chatId={chatId} />
+          </Stack>
         </Drawer>
       </Grid>
     </>
