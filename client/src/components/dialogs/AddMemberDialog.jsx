@@ -1,14 +1,15 @@
 import { Button, Dialog, DialogTitle, Stack, Typography } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { sampleUsers } from "../../constants/sampleData";
 import UserItem from "../shared/UserItem";
 
 const AddMemberDialog = ({ addMember, isLoadingAddMember, chatId }) => {
-  const addFriendHandler = () => {};
-  const addMemberSubmitHandler = () => {};
-  const closeHandler = () => {};
+  // -> States variable---------------------------------------
   const [members, setMembers] = useState(sampleUsers);
   const [selectedMembers, setSelectedMembers] = useState([]);
+
+  // -> Handlers--------------------------------------------
+  const addFriendHandler = () => {};
 
   const selectMemberHandler = (id) => {
     setSelectedMembers((prev) =>
@@ -17,13 +18,20 @@ const AddMemberDialog = ({ addMember, isLoadingAddMember, chatId }) => {
         : [...prev, id]
     );
   };
+  const closeHandler = () => {
+    setSelectedMembers([]);
+    setMembers([]);
+  };
+  const addMemberSubmitHandler = () => {
+    closeHandler();
+  };
   return (
     <Dialog open onClose={closeHandler}>
       <DialogTitle textAlign={"center"}>Add Member</DialogTitle>
       <Stack p={"2rem"} width={"20rem"} spacing={"2rem"}>
         <Stack spacing={"1rem"}>
-          {sampleUsers.length > 0 ? (
-            sampleUsers.map((i) => (
+          {members.length > 0 ? (
+            members.map((i) => (
               <UserItem key={i._id} user={i} handler={addFriendHandler} />
             ))
           ) : (

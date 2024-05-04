@@ -23,6 +23,9 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Link } from "../components/styles/StyledComponents";
 import AvatarCard from "../components/shared/AvatarCard";
 import { samepleChats } from "../constants/sampleData/";
+import { sampleUsers } from "../constants/sampleData.js";
+import UserItem from "../components/shared/UserItem.jsx";
+import { bgGradient, bgGradientBluePink } from "../constants/color.js";
 
 // -> Lazy Imports
 const ConfirmDelteDialog = lazy(() =>
@@ -36,7 +39,7 @@ const AddMemberDialog = lazy(() =>
 const Groups = () => {
   const chatId = useSearchParams()[0].get("group");
   const navigate = useNavigate();
-  const isMember = true;
+  const isMember = false;
   // -> State variables------------
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -71,10 +74,15 @@ const Groups = () => {
     closeconfirmDeleteHandler();
   };
   const openAddMemberHandler = () => {};
+  const removeMemberHandler = (id) => {
+    console.log("Member ", id);
+  };
   // -> UseEffect--------------------
   useEffect(() => {
-    setGroupName(`Group Name ${chatId}`);
-    setGroupNameUpdatedValue(`Group Name ${chatId}`);
+    if (chatId) {
+      setGroupName(`Group Name ${chatId}`);
+      setGroupNameUpdatedValue(`Group Name ${chatId}`);
+    }
 
     return () => {
       setGroupName("");
@@ -188,9 +196,9 @@ const Groups = () => {
           item
           sx={{
             display: { xs: "none", sm: "block" },
+            backgroundImage: bgGradientBluePink,
           }}
           sm={4}
-          bgcolor={"bisque"}
         >
           <GroupsList myGroups={samepleChats} chatId={chatId} />
         </Grid>
@@ -203,6 +211,7 @@ const Groups = () => {
             padding: "1rem 3rem",
             position: "relative",
           }}
+          bgcolor="rgba(0,0,0,0.1)"
           xs={12}
           sm={8}
         >
@@ -228,10 +237,24 @@ const Groups = () => {
                   md: " 1rem 4rem",
                 }}
                 spacing={"2rem"}
-                bgcolor={"bisque"}
+                // bgcolor={"bisque"}
                 hight={"50vh"}
                 overflow={"auto"}
-              ></Stack>
+              >
+                {sampleUsers.map((i) => (
+                  <UserItem
+                    key={i._id}
+                    user={i}
+                    isAdded
+                    styling={{
+                      boxShadow: "0 0 .5rem rgba(0,0,0,0.2)",
+                      padding: "1rem 2rem",
+                      borderRadius: "1rem",
+                    }}
+                    handler={removeMemberHandler}
+                  />
+                ))}
+              </Stack>
               {ButtonGroup}
             </>
           )}
@@ -257,7 +280,14 @@ const Groups = () => {
           open={isMobileMenuOpen}
           onClose={handleMobileClose}
         >
-          <GroupsList w={"50vw"} myGroups={samepleChats} chatId={chatId} />
+          <GroupsList
+            sx={{
+              backgroundImage: bgGradientBluePink,
+            }}
+            w={"50vw"}
+            myGroups={samepleChats}
+            chatId={chatId}
+          />
         </Drawer>
       </Grid>
     </>

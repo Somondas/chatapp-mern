@@ -6,7 +6,7 @@ import { transformImage } from "../../lib/features";
 const AvatarCard = ({ avatar = [], max = 4 }) => {
   return (
     <Stack direction={"row"} spacing={0.5}>
-      <AvatarGroup max={max} sx={{ width: "100%" }}>
+      <AvatarGroup max={max} sx={{ width: "100%", position: "relative" }}>
         <Box sx={{ width: "5rem", height: "3rem" }}>
           {avatar.map((i, index) => (
             <Avatar
