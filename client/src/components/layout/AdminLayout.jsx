@@ -1,9 +1,11 @@
 import {
   Close as CloseIcon,
   Groups as GroupsIcon,
+  Dashboard as DashboardIcon,
   ManageAccounts as ManageAccountsIcon,
   Menu as MenuIcon,
   Message as MessageIcon,
+  ExitToApp as ExitToAppIcon,
 } from "@mui/icons-material";
 import {
   Box,
@@ -12,9 +14,22 @@ import {
   IconButton,
   Stack,
   Typography,
+  styled,
 } from "@mui/material";
 import React, { useState } from "react";
+import { Link as LinkComponent } from "react-router-dom";
+import { grayColor, matBlack } from "../../constants/color";
 
+// >> Styled Component
+const Link = styled(LinkComponent)`
+  text-decoration: none;
+  border-radius: 2rem;
+  padding: 1rem 2rem;
+  color: black;
+  &:hover {
+    color: rgba(0, 0, 0, 0.54);
+  }
+`;
 // >> adminTabs constant
 const adminTabs = [
   {
@@ -41,11 +56,38 @@ const adminTabs = [
 
 // >> SideBar
 const SideBar = ({ w = "100&" }) => {
+  const logoutHandler = () => {};
   return (
     <Stack width={w} direction={"column"} p={"3rem"} spacing={"3rem"}>
       <Typography variant="h5" textTransform={"uppercase"}>
         Chattu
       </Typography>
+      <Stack spacing={"1rem"}>
+        {adminTabs.map((tab) => (
+          <Link
+            sx={
+              location.pathname === tab.path && {
+                bgcolor: matBlack,
+                color: "white",
+                ":hover": { color: "white" },
+              }
+            }
+            key={tab.path}
+            to={tab.path}
+          >
+            <Stack direction={"row"} alignItems={"center"} spacing={"1rem"}>
+              {tab.icon}
+              <Typography>{tab.name}</Typography>
+            </Stack>
+          </Link>
+        ))}
+        <Link onChlick={logoutHandler}>
+          <Stack direction={"row"} alignItems={"center"} spacing={"1rem"}>
+            <ExitToAppIcon />
+            <Typography fontSize={"1.2rem"}>Logout</Typography>
+          </Stack>
+        </Link>
+      </Stack>
     </Stack>
   );
 };
@@ -56,6 +98,7 @@ const AdminLayout = ({ children }) => {
   // -> Handlers----------------------------------
   const handleMobile = () => setIsMobile(!isMobile);
   const handleClose = () => setIsMobile(false);
+
   return (
     <>
       <Grid container minHeight={"100vh"}>
@@ -93,7 +136,7 @@ const AdminLayout = ({ children }) => {
           lg={9}
           md={8}
           sx={{
-            bgcolor: "#f5f",
+            bgcolor: grayColor,
           }}
         >
           {children}
