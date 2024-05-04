@@ -8,6 +8,8 @@ const Login = lazy(() => import("./pages/Login.jsx"));
 const Chat = lazy(() => import("./pages/Chat.jsx"));
 const Groups = lazy(() => import("./pages/Groups.jsx"));
 const NotFound = lazy(() => import("./pages/NotFound.jsx"));
+const AdminLogin = lazy(() => import("./pages/admin/AdminLogin.jsx"));
+const Dashboard = lazy(() => import("./pages/admin/Dashboard.jsx"));
 
 const App = () => {
   const user = true;
@@ -30,6 +32,9 @@ const App = () => {
             }
           />
           <Route path="*" element={<NotFound />} />
+          {/* Admin Routes */}
+          <Route path="/admin" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<Dashboard />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

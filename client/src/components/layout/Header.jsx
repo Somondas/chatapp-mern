@@ -17,7 +17,7 @@ import {
   Notifications as NotificationsIcon,
   Add as AddIcon,
 } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const SearchDialog = lazy(() => import("../specific/Search"));
 const NewGroupDialog = lazy(() => import("../specific/NewGroup"));
 const NotificationDialog = lazy(() => import("../specific/Notifications"));
@@ -65,9 +65,11 @@ const Header = () => {
         >
           <Toolbar>
             <Typography
+              onClick={() => navigate("/")}
               variant="h6"
               sx={{
                 display: { xs: "none", sm: "block" },
+                cursor: "pointer",
               }}
             >
               Chattu
