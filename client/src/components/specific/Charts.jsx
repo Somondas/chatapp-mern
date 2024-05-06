@@ -1,5 +1,3 @@
-import React from "react";
-import { Line, Doughnut, Pie } from "react-chartjs-2";
 import {
   ArcElement,
   CategoryScale,
@@ -10,8 +8,15 @@ import {
   LinearScale,
   PointElement,
   Tooltip,
-  plugins,
 } from "chart.js";
+import React from "react";
+import { Doughnut, Line } from "react-chartjs-2";
+import {
+  orange,
+  orangeLight,
+  purple,
+  purpleLight,
+} from "../../constants/color";
 
 ChartJS.register(
   Tooltip,
@@ -31,15 +36,36 @@ const lineChartOptions = {
     },
     title: {
       display: false,
-      text: "Chart.js Line Chart",
+    },
+  },
+
+  scales: {
+    x: {
+      grid: {
+        display: false,
+      },
+    },
+    y: {
+      beginAtZero: true,
+      grid: {
+        display: false,
+      },
     },
   },
 };
 
 const LineChart = () => {
   const data = {
-    lables: ["January", "February", "March", "April", "May", "June", "July"],
-    datasets: [1, 2, 32, 21, 12, 11, 12],
+    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    datasets: [
+      {
+        data: [65, 59, 80, 81, 56, 55, 4],
+        label: "My First dataset",
+        fill: true,
+        backgroundColor: purpleLight,
+        borderColor: purple,
+      },
+    ],
   };
   return <Line data={data} options={lineChartOptions} />;
 };
