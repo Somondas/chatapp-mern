@@ -17,7 +17,7 @@ import {
   styled,
 } from "@mui/material";
 import React, { useState } from "react";
-import { Link as LinkComponent } from "react-router-dom";
+import { Link as LinkComponent, Navigate } from "react-router-dom";
 import { grayColor, matBlack } from "../../constants/color";
 
 // >> Styled Component
@@ -39,12 +39,12 @@ const adminTabs = [
   },
   {
     name: "Users",
-    path: "/admin/user-management",
+    path: "/admin/users",
     icon: <ManageAccountsIcon />,
   },
   {
     name: "Chats",
-    path: "/admin/chats-management",
+    path: "/admin/chats",
     icon: <GroupsIcon />,
   },
   {
@@ -91,7 +91,9 @@ const SideBar = ({ w = "100&" }) => {
     </Stack>
   );
 };
+
 const AdminLayout = ({ children }) => {
+  const isAdmin = true;
   // -> States--------------------------------
   const [isMobile, setIsMobile] = useState(false);
 
@@ -99,6 +101,7 @@ const AdminLayout = ({ children }) => {
   const handleMobile = () => setIsMobile(!isMobile);
   const handleClose = () => setIsMobile(false);
 
+  if (!isAdmin) return <Navigate to="/admin" />;
   return (
     <>
       <Grid container minHeight={"100vh"}>
