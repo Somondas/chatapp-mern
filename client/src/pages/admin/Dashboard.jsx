@@ -128,28 +128,34 @@ const Dashboard = () => {
 // >> Widget Component-----------------------------------------
 const Widget = ({ title, value, Icon }) => (
   <Paper
+    elevation={3}
     sx={{
       padding: "2rem",
       margin: "2rem 0",
-      borderRadius: "1rem",
+      borderRadius: "1.5rem",
       width: "20rem",
     }}
   >
-    <Stack alignContent={"center"} spacing={"1rem"}>
-      <Typography variant="h5">{title}</Typography>
-      <Stack>{Icon}</Stack>
+    <Stack alignItems={"center"} spacing={"1rem"}>
       <Typography
         sx={{
-          color: "rgba(0, 0, 0, 0.7)",
+          color: "rgba(0,0,0,0.7)",
           borderRadius: "50%",
-          border: "5px solid rgba(0, 0, 0, 0.9)",
+          border: `5px solid rgba(0,0,0,0.9)`,
+          width: "5rem",
+          height: "5rem",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
-        variant=""
       >
         {value}
       </Typography>
+      <Stack direction={"row"} spacing={"1rem"} alignItems={"center"}>
+        {Icon}
+        <Typography>{title}</Typography>
+      </Stack>
     </Stack>
   </Paper>
 );
-
 export default Dashboard;
