@@ -20,6 +20,7 @@ import {
   CurveButton,
   SearchField,
 } from "../../components/styles/StyledComponents";
+import { LineChart } from "../../components/specific/Charts";
 
 const Dashboard = () => {
   // >> Appbar Component--------------------------------------
@@ -88,7 +89,7 @@ const Dashboard = () => {
             <Typography margin={"2rem 0"} variant="h4">
               Last Messages
             </Typography>
-            {"Caht"}
+            <LineChart />
           </Paper>
           <Paper
             elevation={3}
