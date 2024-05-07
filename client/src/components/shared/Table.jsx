@@ -8,19 +8,18 @@ const Table = ({ rows, columns, heading, rowHeight = 52 }) => {
     <Container
       sx={{
         height: "100vh",
-        overflow: "hidden",
       }}
     >
       <Paper
         elevation={3}
         sx={{
           padding: "1rem 4rem",
+          borderRadius: "1rem",
           margin: "auto",
           width: "100%",
-          overflow: "auto",
-          borderRadius: "1rem",
-          boxShadow: "none",
+          overflow: "hidden",
           height: "100%",
+          boxShadow: "none",
         }}
       >
         <Typography
@@ -34,6 +33,12 @@ const Table = ({ rows, columns, heading, rowHeight = 52 }) => {
           {heading}
         </Typography>
         <DataGrid
+          rows={rows}
+          columns={columns}
+          rowHeight={rowHeight}
+          style={{
+            height: "80%",
+          }}
           sx={{
             border: "none",
             ".table-header": {
@@ -41,9 +46,6 @@ const Table = ({ rows, columns, heading, rowHeight = 52 }) => {
               color: "white",
             },
           }}
-          rows={rows}
-          columns={columns}
-          rowHeight={rowHeight}
         />
       </Paper>
     </Container>
