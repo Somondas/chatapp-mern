@@ -81,7 +81,7 @@ const SideBar = ({ w = "100&" }) => {
             </Stack>
           </Link>
         ))}
-        <Link onChlick={logoutHandler}>
+        <Link onClick={logoutHandler}>
           <Stack direction={"row"} alignItems={"center"} spacing={"1rem"}>
             <ExitToAppIcon />
             <Typography fontSize={"1.2rem"}>Logout</Typography>

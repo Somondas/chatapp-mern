@@ -17,6 +17,7 @@ import {
   purple,
   purpleLight,
 } from "../../constants/color";
+import { getLast7days } from "../../lib/features";
 
 ChartJS.register(
   Tooltip,
@@ -28,6 +29,7 @@ ChartJS.register(
   ArcElement,
   Legend
 );
+const labels = getLast7days();
 const lineChartOptions = {
   responsive: true,
   plugins: {
@@ -54,12 +56,12 @@ const lineChartOptions = {
   },
 };
 
-const LineChart = () => {
+const LineChart = ({ value }) => {
   const data = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    labels: labels,
     datasets: [
       {
-        data: [65, 59, 80, 81, 56, 55, 4],
+        data: value,
         label: "My First dataset",
         fill: true,
         backgroundColor: purpleLight,

@@ -89,7 +89,7 @@ const Dashboard = () => {
             <Typography margin={"2rem 0"} variant="h4">
               Last Messages
             </Typography>
-            <LineChart />
+            <LineChart value={[65, 59, 80, 81, 56, 55, 4]} />
           </Paper>
           <Paper
             elevation={3}
