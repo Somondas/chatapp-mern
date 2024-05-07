@@ -27,15 +27,18 @@ const transformImage = (url = "", width = 100) => {
   return url;
 };
 
-const getLast7days = () => {
+const getLast7Days = () => {
   const currentDate = moment();
-  const last7days = [];
+
+  const last7Days = [];
+
   for (let i = 0; i < 7; i++) {
     const dayDate = currentDate.clone().subtract(i, "days");
     const dayName = dayDate.format("dddd");
-    last7days.unshift(dayName);
-    console.log(last7days);
-    return last7days;
+
+    last7Days.unshift(dayName);
   }
+
+  return last7Days;
 };
-export { fileFormat, transformImage, getLast7days };
+export { fileFormat, transformImage, getLast7Days };
