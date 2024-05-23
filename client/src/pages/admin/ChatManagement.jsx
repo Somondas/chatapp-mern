@@ -1,11 +1,10 @@
+import { Avatar, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
+import AvatarCard from "../../components/shared/AvatarCard";
 import Table from "../../components/shared/Table";
-import { Avatar, Stack } from "@mui/material";
 import { dashboardData } from "../../constants/sampleData";
 import { transformImage } from "../../lib/features";
-import AvatarCard from "../../components/shared/AvatarCard";
-
 const columns = [
   {
     field: "id",
@@ -33,8 +32,9 @@ const columns = [
     headerClassName: "table-header",
     width: 200,
     renderCell: (params) => (
-      <Stack>
-        <Avatar alt={params.row.sender.name} src={params.row.sender.avatar} />
+      <Stack direction="row" alignItems="center" spacing={"1rem"}>
+        <Avatar alt={params.row.creator.name} src={params.row.creator.avatar} />
+        <span>{params.row.creator.name}</span>
       </Stack>
     ),
   },
@@ -55,13 +55,18 @@ const columns = [
 const ChatManagement = () => {
   const [rows, setRows] = useState([]);
   useEffect(() => {
-    // setRows(
-    //   dashboardData.users.map((user) => ({
-    //     ...user,
-    //     id: user._id,
-    //     avatar: transformImage(user.avatar, 50),
-    //   }))
-    // );
+    setRows(
+      dashboardData.chats.map((i) => ({
+        ...i,
+        id: i._id,
+        avatar: i.avatar.map((i) => transformImage(i, 50)),
+        members: i.members.map((i) => transformImage(i.avatar, 50)),
+        creator: {
+          name: i.creator.name,
+          avatar: transformImage(i.creator.avatar, 50),
+        },
+      }))
+    );
   }, []);
   return (
     <AdminLayout>
