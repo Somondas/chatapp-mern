@@ -1,35 +1,30 @@
-import mongoose, { Schema, model, models } from "mongoose";
+import mongoose, { Schema, Types, model, models } from "mongoose";
 // import { hash } from "bcrypt";
 
 const schema = new Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
-    bio: {
-      type: String,
-      required: true,
-    },
-    username: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    password: {
-      type: String,
-      required: true,
-      select: false,
-    },
-    avatar: {
-      public_id: {
-        type: String,
-        required: true,
+    content: String,
+    attachments: [
+      {
+        public_id: {
+          type: String,
+          required: true,
+        },
+        url: {
+          type: String,
+          required: true,
+        },
       },
-      url: {
-        type: String,
-        required: true,
-      },
+    ],
+    sender: {
+      type: Types.ObjectId,
+      ref: "User",
+      require: true,
+    },
+    chat: {
+      type: Types.ObjectId,
+      ref: "Chat",
+      require: true,
     },
   },
   {
@@ -37,4 +32,4 @@ const schema = new Schema(
   }
 );
 
-export const User = models.User || model("User", schema);
+export const Message = models.Message || model("Message", schema);
