@@ -1,4 +1,4 @@
-import mongoose, { Schema, Types, model, models } from "mongoose";
+import mongoose, { Schema, Types, model } from "mongoose";
 // import { hash } from "bcrypt";
 
 const schema = new Schema(
@@ -43,4 +43,4 @@ const schema = new Schema(
   }
 );
 
-export const Chat = models.Chat || model("Chat", schema);
+export const Chat = mongoose.models.Chat || model("Chat", schema);

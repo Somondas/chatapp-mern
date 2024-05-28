@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, models } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 // import { hash } from "bcrypt";
 
 const schema = new Schema(
@@ -37,4 +37,4 @@ const schema = new Schema(
   }
 );
 
-export const User = models.User || model("User", schema);
+export const User = mongoose.models.User || model("User", schema);
