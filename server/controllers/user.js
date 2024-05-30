@@ -3,14 +3,16 @@
 import { User } from "../models/user.js";
 
 const newUser = async (req, res) => {
+  const { name, username, password, bio } = req.body;
   const avatar = {
     public_id: "fkjasdklf",
     url: "fasdfasdf",
   };
   await User.create({
-    name: "Name",
-    username: "username",
-    password: "password",
+    name,
+    bio,
+    username,
+    password,
     avatar,
   });
   res.status(200).json({ message: "User created Successfully" });
