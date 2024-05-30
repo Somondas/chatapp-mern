@@ -1,13 +1,17 @@
 import express from "express";
 import userRoutes from "./routes/user.js";
 import { connectDB } from "./utils/features.js";
+import dotenv from "dotenv";
 
+// **Configuration-------------------------------
 const app = express();
-const adminPassword = encodeURIComponent(process.env.ADMIN_PASSWORD);
-connectDB(
-  `mongodb+srv://somon:${adminPassword}@chattu.pe6yn2g.mongodb.net/?retryWrites=true&w=majority&appName=chattu`
-);
+dotenv.config({ path: "./.env" });
+app.use(express.json());
+
+const mongoURI = process.env.MONGODB_URI;
+const port = process.env.PORT || 3000;
+connectDB(mongoURI);
 app.use("/user", userRoutes);
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
