@@ -14,4 +14,5 @@ const connectDB = (uri) => {
     });
 };
 
-export { connectDB };
+const sendToken = (res, user, code, message) => {};
+export { connectDB, sendToken };
