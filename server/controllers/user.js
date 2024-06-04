@@ -38,5 +38,14 @@ const login = TryCatch(async (req, res, next) => {
   }
   sendToken(res, user, 200, `Welcome Back, ${user.name}`);
 });
+// >> Get My Profile Controller----------------------------
+// const getMyProfile = TryCatch(async (req, res, next) => {});
+const getMyProfile = async (req, res) => {
+  res.status(200).json({
+    success: true,
+    data: "req.user",
+  });
+};
 
-export { login, newUser };
+// -> All Exports----------------------------------------------
+export { login, newUser, getMyProfile };
