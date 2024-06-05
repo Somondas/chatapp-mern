@@ -1,5 +1,6 @@
 import { TryCatch } from "../middlewares/error.js";
 import { ErrorHandler } from "../utils/utility.js";
+import { Chat } from "../models/chat.js";
 
 const newGroupChat = TryCatch(async (req, res, next) => {
   const { name, members } = req.body;
@@ -10,6 +11,13 @@ const newGroupChat = TryCatch(async (req, res, next) => {
       )
     );
   }
+  const allMembers = [...members, req.user];
+  await Chat.create({
+    name,
+    groupChat: true,
+    creator: req.user,
+    members: allMembers,
+  });
 });
 
 export { newGroupChat };
