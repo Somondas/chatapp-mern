@@ -1,5 +1,5 @@
 import express from "express";
-import { getMyProfile, login, newUser } from "../controllers/user.js";
+import { getMyProfile, login, logout, newUser } from "../controllers/user.js";
 import { singleUpload } from "../middlewares/multer.js";
 import { isAuthenticated } from "../middlewares/auth.js";
 
@@ -9,6 +9,7 @@ app.post("/new", singleUpload, newUser);
 app.post("/login", login);
 
 // -> Secure Routes( User must be logged in)---------
-
-app.get("/me", isAuthenticated, getMyProfile);
+app.use(isAuthenticated);
+app.get("/me", getMyProfile);
+app.get("/logout", logout);
 export default app;

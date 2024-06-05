@@ -40,13 +40,21 @@ const login = TryCatch(async (req, res, next) => {
 });
 // >> Get My Profile Controller----------------------------
 // const getMyProfile = TryCatch(async (req, res, next) => {});
-const getMyProfile = async (req, res) => {
+const getMyProfile = TryCatch(async (req, res) => {
   const user = await User.findById(req.user);
   res.status(200).json({
     success: true,
     user,
   });
-};
+});
+
+// >> Logout Controller------------------------------------
+const logout = TryCatch(async (req, res) => {
+  return res.status(200).cookie("chattu-token", "").json({
+    success: true,
+    message: "User Logged Out Successfully",
+  });
+});
 
 // -> All Exports----------------------------------------------
-export { login, newUser, getMyProfile };
+export { login, newUser, getMyProfile, logout };
