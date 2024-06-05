@@ -20,5 +20,5 @@ app.use("/user", userRoutes);
 app.use("/chat", chatRoutes);
 app.use(errorMiddleware);
 app.listen(port, () => {
-  console.log(`Server is running on port ${5000}`);
+  console.log(`Server is running on port ${4000}`);
 });
