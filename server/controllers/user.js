@@ -2,7 +2,7 @@
 
 import { compare } from "bcrypt";
 import { User } from "../models/user.js";
-import { sendToken } from "../utils/features.js";
+import { cookieOptions, sendToken } from "../utils/features.js";
 import { TryCatch } from "../middlewares/error.js";
 import { ErrorHandler } from "../utils/utility.js";
 
@@ -50,11 +50,22 @@ const getMyProfile = TryCatch(async (req, res) => {
 
 // >> Logout Controller------------------------------------
 const logout = TryCatch(async (req, res) => {
-  return res.status(200).cookie("chattu-token", "").json({
+  return res
+    .status(200)
+    .cookie("chattu-token", "", { ...cookieOptions, maxAge: 0 })
+    .json({
+      success: true,
+      message: "User Logged Out Successfully",
+    });
+});
+// >> Search User Controller-----------------------------------
+const searchUser = TryCatch(async (req, res) => {
+  const { name } = req.query;
+  return res.status(200).json({
     success: true,
     message: "User Logged Out Successfully",
   });
 });
 
 // -> All Exports----------------------------------------------
-export { login, newUser, getMyProfile, logout };
+export { login, newUser, getMyProfile, logout, searchUser };
