@@ -1,6 +1,8 @@
 import { TryCatch } from "../middlewares/error.js";
 import { ErrorHandler } from "../utils/utility.js";
 import { Chat } from "../models/chat.js";
+import { emitEvent } from "../utils/features.js";
+import { ALERT } from "../constants/events.js";
 
 const newGroupChat = TryCatch(async (req, res, next) => {
   const { name, members } = req.body;
@@ -17,6 +19,13 @@ const newGroupChat = TryCatch(async (req, res, next) => {
     groupChat: true,
     creator: req.user,
     members: allMembers,
+  });
+  emitEvent(req, ALERT, allMembers, `Welcome to ${name} group`);
+  emitEvent(req, REFETCH_CHATS, members);
+
+  res.status(201).json({
+    success: true,
+    message: "Group Created",
   });
 });
 
