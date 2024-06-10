@@ -1,5 +1,4 @@
-import mongoose, { Schema, Types, model } from "mongoose";
-// import { hash } from "bcrypt";
+import mongoose, { Schema, model, Types } from "mongoose";
 
 const schema = new Schema(
   {
@@ -7,15 +6,9 @@ const schema = new Schema(
       type: String,
       required: true,
     },
-    //
     groupChat: {
       type: Boolean,
       default: false,
-    },
-    username: {
-      type: String,
-      required: true,
-      unique: true,
     },
     creator: {
       type: Types.ObjectId,
@@ -27,16 +20,6 @@ const schema = new Schema(
         ref: "User",
       },
     ],
-    avatar: {
-      public_id: {
-        type: String,
-        required: true,
-      },
-      url: {
-        type: String,
-        required: true,
-      },
-    },
   },
   {
     timestamps: true,
