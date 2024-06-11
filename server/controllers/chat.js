@@ -30,27 +30,13 @@ const newGroupChat = TryCatch(async (req, res, next) => {
   });
 });
 const getMyChats = TryCatch(async (req, res, next) => {
-  const { name, members } = req.body;
-  if (members.length < 2) {
-    return next(
-      new ErrorHandler(
-        "You need to add atleast 3 members to create a group chat"
-      )
-    );
-  }
-  const allMembers = [...members, req.user];
-  await Chat.create({
-    name,
-    groupChat: true,
-    creator: req.user,
-    members: allMembers,
-  });
-  emitEvent(req, ALERT, allMembers, `Welcome to ${name} group`);
-  emitEvent(req, REFETCH_CHATS, members);
-
+  const chats = await Chat.find({ members: req.user }).populate(
+    "members",
+    "name avatar"
+  );
   res.status(201).json({
     success: true,
-    message: "Group Created",
+    chats,
   });
 });
 

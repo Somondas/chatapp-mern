@@ -7,5 +7,5 @@ const app = express.Router();
 // -> Secure Routes( User must be logged in)---------
 app.use(isAuthenticated);
 app.post("/new", newGroupChat);
-app.post("/my", getMyChats);
+app.get("/my", getMyChats);
 export default app;
