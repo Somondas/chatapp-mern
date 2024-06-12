@@ -61,6 +61,7 @@ const getMyChats = TryCatch(async (req, res, next) => {
     chats: transformedChats,
   });
 });
+
 // >> Get My Group Controller------------------------------
 const getMyGroups = TryCatch(async (req, res, next) => {
   const chats = await Chat.find({
