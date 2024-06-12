@@ -108,9 +108,31 @@ const addMembers = TryCatch(async (req, res, next) => {
 
   const allNewMembers = await Promise.all(allNewMembersPromise);
 
+  chat.members.push(...allNewMembers.map(({ _id }) => _id));
+
+  if (chat.members.length > 100) {
+    return next(
+      new ErrorHandler(
+        "You can't add more than 100 members to a group chat",
+        400
+      )
+    );
+  }
+  await chat.save();
+
+  const allUsersName = allNewMembers.map(({ name }) => name).join(",");
+
+  emitEvent(
+    req,
+    ALERT,
+    chat.members,
+    `${allUsersName} has been added to ${chat.name} group`
+  );
+
+  emitEvent(req, REFETCH_CHATS, chat.members);
   return res.status(200).json({
     success: true,
-    groups,
+    message: "Members Added Successfully",
   });
 });
 export { newGroupChat, getMyChats, getMyGroups, addMembers };
