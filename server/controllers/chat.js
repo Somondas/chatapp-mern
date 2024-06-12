@@ -1,6 +1,7 @@
 import { TryCatch } from "../middlewares/error.js";
 import { ErrorHandler } from "../utils/utility.js";
 import { Chat } from "../models/chat.js";
+import { User } from "../models/user.js";
 import { emitEvent } from "../utils/features.js";
 import { ALERT, REFETCH_CHATS } from "../constants/events.js";
 import { getOtherMembers } from "../lib/helper.js";
@@ -83,18 +84,29 @@ const getMyGroups = TryCatch(async (req, res, next) => {
 
 // >> Add Members to Group Controller--------------------------
 const addMembers = TryCatch(async (req, res, next) => {
-  const chats = await Chat.find({
-    members: req.user,
-    groupChat: true,
-    creator: req.user,
-  }).populate("members", "name avatar");
+  const { members, chatId } = req.body;
 
-  const groups = chats.map(({ members, _id, groupChat, name }) => ({
-    _id,
-    groupChat,
-    name,
-    avatar: members.slice(0, 3).map(({ avatar }) => avatar.url),
-  }));
+  const chat = await Chat.findById(chatId);
+
+  if (!chat) {
+    return next(new ErrorHandler("Chat not found", 404));
+  }
+  if (!chat.groupChat) {
+    return next(
+      new ErrorHandler("You can't add members to a single chat", 400)
+    );
+  }
+  if (chat.creator.toString() !== req.user.toString()) {
+    return next(
+      new ErrorHandler(
+        "You can't add members to a group chat you didn't create",
+        400
+      )
+    );
+  }
+  const allNewMembersPromise = members.map((i) => User.findById(i, "name"));
+
+  const allNewMembers = await Promise.all(allNewMembersPromise);
 
   return res.status(200).json({
     success: true,
