@@ -86,6 +86,9 @@ const getMyGroups = TryCatch(async (req, res, next) => {
 const addMembers = TryCatch(async (req, res, next) => {
   const { members, chatId } = req.body;
 
+  if (!members || members.length < 1) {
+    return next(new ErrorHandler("Please provide members", 400));
+  }
   const chat = await Chat.findById(chatId);
 
   if (!chat) {
@@ -108,7 +111,11 @@ const addMembers = TryCatch(async (req, res, next) => {
 
   const allNewMembers = await Promise.all(allNewMembersPromise);
 
-  chat.members.push(...allNewMembers.map(({ _id }) => _id));
+  const uniqueMembers = allNewMembers
+    .filter((i) => !chat.members.includes(i._id.toString()))
+    .map((i) => i._id);
+
+  chat.members.push(...uniqueMembers);
 
   if (chat.members.length > 100) {
     return next(
