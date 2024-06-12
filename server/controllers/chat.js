@@ -142,4 +142,19 @@ const addMembers = TryCatch(async (req, res, next) => {
     message: "Members Added Successfully",
   });
 });
-export { newGroupChat, getMyChats, getMyGroups, addMembers };
+
+// >> Remove Members to Group Controller-----------------------
+const removeMembers = TryCatch(async (req, res, next) => {
+  const { chatId, userId } = req.body;
+
+  const [chat, userThatWillBeRemoved] = await Promise.all([
+    Chat.findById(chatId),
+    User.findById(userId, "name"),
+  ]);
+
+  if (!chat) return next(new ErrorHandler("Chat not found", 404));
+
+  if (!chat.groupChat)
+    return next(new ErrorHandler("This is not a group chat", 400));
+});
+export { newGroupChat, getMyChats, getMyGroups, addMembers, removeMembers };
