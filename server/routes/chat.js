@@ -20,9 +20,9 @@ app.get("/my", getMyChats);
 
 app.get("/my/groups", getMyGroups);
 
-app.put("/addmembers", addMembers);
+app.put("/add-members", addMembers);
 
-app.delete("/removemember", removeMembers);
+app.delete("/remove-member", removeMembers);
 
 app.delete("/leave/:id", leaveGroup);
 
