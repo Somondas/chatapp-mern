@@ -62,7 +62,7 @@ const getMyChats = TryCatch(async (req, res, next) => {
   });
 });
 
-// >> Get My Group Controller------------------------------
+// >> Get My Group Controller----------------------------------
 const getMyGroups = TryCatch(async (req, res, next) => {
   const chats = await Chat.find({
     members: req.user,
