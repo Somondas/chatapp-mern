@@ -3,7 +3,12 @@ import { ErrorHandler } from "../utils/utility.js";
 import { Chat } from "../models/chat.js";
 import { User } from "../models/user.js";
 import { emitEvent } from "../utils/features.js";
-import { ALERT, REFETCH_CHATS } from "../constants/events.js";
+import {
+  ALERT,
+  NEW_ATTACHMENT,
+  NEW_MESSAGE,
+  REFETCH_CHATS,
+} from "../constants/events.js";
 import { getOtherMembers } from "../lib/helper.js";
 
 // >> New Group Chat Controller-------------------------------
@@ -244,10 +249,33 @@ const sendAttachment = TryCatch(async (req, res, next) => {
     return next(new ErrorHandler("Please provide files", 400));
 
   // ?? Upload files here
+  const attachments = [];
 
+  const messageForRealTime = {
+    content: "",
+    attachments,
+    sender: {
+      _id: me._id,
+      name: me.name,
+    },
+    chatId,
+  };
+
+  const messageForDB = {
+    content: "",
+    attachments,
+    sender: me._id,
+    chatId,
+  };
+
+  emitEvent(req, NEW_ATTACHMENT, chat.members, {
+    message: messageForRealTime,
+    chatId,
+  });
+  emitEvent(req, NEW_MESSAGE_ALERT, chat.members, { chatId });
   return res.status(200).json({
     success: true,
-    message: "Attachment Send Successfully",
+    message,
   });
 });
 
