@@ -30,6 +30,6 @@ app.delete("/leave/:id", leaveGroup);
 
 //-> Send Attachment
 
-app.post("message", attachmentsMulter, sendAttachment);
+app.post("/message", attachmentsMulter, sendAttachment);
 
 export default app;
