@@ -227,6 +227,31 @@ const leaveGroup = TryCatch(async (req, res, next) => {
   });
 });
 
+// >> Send Attachment Controller-------------------------------
+const sendAttachment = TryCatch(async (req, res, next) => {
+  const { chatId } = req.body;
+
+  const [chat, me] = await Promise.all([
+    Chat.findById(chatId),
+    User.findById(req.user, "name"),
+  ]);
+
+  if (!chat) return next(new ErrorHandler("Chat not found", 404));
+
+  const files = req.files || [];
+
+  if (files.length < 1)
+    return next(new ErrorHandler("Please provide files", 400));
+
+  // ?? Upload files here
+
+  return res.status(200).json({
+    success: true,
+    message: "Attachment Send Successfully",
+  });
+});
+
+// -> All Exports----------------------------------------------
 export {
   newGroupChat,
   getMyChats,
@@ -234,4 +259,5 @@ export {
   addMembers,
   removeMembers,
   leaveGroup,
+  sendAttachment,
 };
