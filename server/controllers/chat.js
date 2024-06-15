@@ -279,7 +279,10 @@ const sendAttachment = TryCatch(async (req, res, next) => {
     message,
   });
 });
-
+// >> Get Chat Details Controller------------------------------
+const getChatDetails = TryCatch(async (req, res, next) => {
+  const { chatId } = req.params;
+});
 // -> All Exports----------------------------------------------
 export {
   newGroupChat,
@@ -289,4 +292,5 @@ export {
   removeMembers,
   leaveGroup,
   sendAttachment,
+  getChatDetails,
 };
