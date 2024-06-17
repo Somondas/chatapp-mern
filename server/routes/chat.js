@@ -8,6 +8,7 @@ import {
   leaveGroup,
   newGroupChat,
   removeMembers,
+  renameGroup,
   sendAttachment,
 } from "../controllers/chat.js";
 import { attachmentsMulter } from "../middlewares/multer.js";
@@ -33,6 +34,6 @@ app.delete("/leave/:id", leaveGroup);
 
 app.post("/message", attachmentsMulter, sendAttachment);
 
-app.route("/:id").get(getChatDetails).put().delete();
+app.route("/:id").get(getChatDetails).put(renameGroup).delete();
 
 export default app;

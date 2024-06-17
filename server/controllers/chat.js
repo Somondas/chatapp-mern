@@ -279,6 +279,7 @@ const sendAttachment = TryCatch(async (req, res, next) => {
     message,
   });
 });
+
 // >> Get Chat Details Controller------------------------------
 const getChatDetails = TryCatch(async (req, res, next) => {
   if (req.query.populate === "true") {
@@ -308,6 +309,33 @@ const getChatDetails = TryCatch(async (req, res, next) => {
     });
   }
 });
+
+// >> Rename Group Controller----------------------------------
+const renameGroup = TryCatch(async (req, res, next) => {
+  const chatId = req.params.id;
+  const { name } = req.body;
+
+  const chat = await Chat.findById(chatId);
+
+  if (!chat) return next(new ErrorHandler("Chat not found", 404));
+
+  if (!chat.groupChat)
+    return next(new ErrorHandler("This is not a group chat", 400));
+
+  if (chat.creator.toString() !== req.user.toString()) {
+    return next(
+      new ErrorHandler("You can't rename a group chat you didn't create", 400)
+    );
+  }
+  chat.name = name;
+  await chat.save();
+  emitEvent(req, REFETCH_CHATS, chat.members);
+
+  return res.status(200).json({
+    success: true,
+    message: "Group renamed successfully",
+  });
+});
 // -> All Exports----------------------------------------------
 export {
   newGroupChat,
@@ -318,4 +346,5 @@ export {
   leaveGroup,
   sendAttachment,
   getChatDetails,
+  renameGroup,
 };
