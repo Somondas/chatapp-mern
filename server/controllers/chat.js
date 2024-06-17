@@ -336,6 +336,27 @@ const renameGroup = TryCatch(async (req, res, next) => {
     message: "Group renamed successfully",
   });
 });
+
+// >> Delete Chat Controller-----------------------------------
+const deleteChat = TryCatch(async (req, res, next) => {
+  const chatId = req.params.id;
+
+  const chat = await Chat.findById(chatId);
+
+  if (!chat) return next(new ErrorHandler("Chat not found", 404));
+
+  if (chat.groupChat && chat.creator.toString() !== req.user.toString()) {
+    return next(
+      new ErrorHandler("You can't delete a group chat you didn't create", 400)
+    );
+  }
+  if (!chat.groupChat && !chat.members.includes(req.user.toString())) {
+    return next(
+      new ErrorHandler("You are not allowed to delete the chat ", 400)
+    );
+  }
+  // ** Here we have to delete all messages as well as attachments of files from cloudinary.
+});
 // -> All Exports----------------------------------------------
 export {
   newGroupChat,
@@ -347,4 +368,5 @@ export {
   sendAttachment,
   getChatDetails,
   renameGroup,
+  deleteChat,
 };
