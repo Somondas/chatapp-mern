@@ -4,6 +4,7 @@ import {
   addMembers,
   deleteChat,
   getChatDetails,
+  getMessages,
   getMyChats,
   getMyGroups,
   leaveGroup,
@@ -34,6 +35,8 @@ app.delete("/leave/:id", leaveGroup);
 //-> Send Attachment
 
 app.post("/message", attachmentsMulter, sendAttachment);
+
+app.get("message/:id", getMessages);
 
 app.route("/:id").get(getChatDetails).put(renameGroup).delete(deleteChat);
 

@@ -380,6 +380,12 @@ const deleteChat = TryCatch(async (req, res, next) => {
     message: "Chat deleted successfully",
   });
 });
+
+// >> Get Messages Controller----------------------------------
+const getMessages = TryCatch(async (req, res, next) => {
+  const chatId = req.params.id;
+  const { page = 1, limit = 20 } = req.query;
+});
 // -> All Exports----------------------------------------------
 export {
   newGroupChat,
@@ -392,4 +398,5 @@ export {
   getChatDetails,
   renameGroup,
   deleteChat,
+  getMessages,
 };
