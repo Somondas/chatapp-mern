@@ -356,6 +356,16 @@ const deleteChat = TryCatch(async (req, res, next) => {
     );
   }
   // ** Here we have to delete all messages as well as attachments of files from cloudinary.
+  const messagesWithAttachments = await Message.find({
+    chat: chatId,
+    attachments: { $exists: true, $ne: [] },
+  });
+
+  const public_ids = [];
+
+  messagesWithAttachments.forEach(({ attachments }) =>
+    attachments.forEach(({ public_id }) => public_ids.push(public_id))
+  );
 });
 // -> All Exports----------------------------------------------
 export {
