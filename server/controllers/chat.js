@@ -3,7 +3,7 @@ import { ErrorHandler } from "../utils/utility.js";
 import { Chat } from "../models/chat.js";
 import { User } from "../models/user.js";
 import { Message } from "../models/message.js";
-import { emitEvent } from "../utils/features.js";
+import { deleteFilesFromCloudinary, emitEvent } from "../utils/features.js";
 import {
   ALERT,
   NEW_ATTACHMENT,
@@ -366,6 +366,19 @@ const deleteChat = TryCatch(async (req, res, next) => {
   messagesWithAttachments.forEach(({ attachments }) =>
     attachments.forEach(({ public_id }) => public_ids.push(public_id))
   );
+
+  await Promise.all([
+    deleteFilesFromCloudinary(public_ids),
+    chat.deleteOne(),
+    Message.deleteMany({ chat: chatId }),
+  ]);
+
+  emitEvent(req, REFETCH_CHATS, members);
+
+  return res.status(200).json({
+    success: true,
+    message: "Chat deleted successfully",
+  });
 });
 // -> All Exports----------------------------------------------
 export {
