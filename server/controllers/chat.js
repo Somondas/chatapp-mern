@@ -281,7 +281,21 @@ const sendAttachment = TryCatch(async (req, res, next) => {
 });
 // >> Get Chat Details Controller------------------------------
 const getChatDetails = TryCatch(async (req, res, next) => {
-  const { chatId } = req.params;
+  if (req.query.populate === "true") {
+    const chat = await Chat.findById(req.params.id).populate(
+      "members",
+      "name avatar"
+    );
+
+    if (!chat) return next(new ErrorHandler("Chat not found", 404));
+
+    chat.members = chat.members.map(({ _id, name, avatar }) => ({
+      _id,
+      name,
+      avatar: avatar.url,
+    }));
+  } else {
+  }
 });
 // -> All Exports----------------------------------------------
 export {
