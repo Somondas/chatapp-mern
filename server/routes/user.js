@@ -8,11 +8,11 @@ import {
 } from "../controllers/user.js";
 import { singleUpload } from "../middlewares/multer.js";
 import { isAuthenticated } from "../middlewares/auth.js";
-import { registerValidator } from "../lib/validator.js";
+import { registerValidator, validateHandler } from "../lib/validator.js";
 
 const app = express.Router();
 
-app.post("/new", singleUpload, registerValidator(), newUser);
+app.post("/new", singleUpload, registerValidator(), validateHandler, newUser);
 app.post("/login", login);
 
 // -> Secure Routes( User must be logged in)---------
