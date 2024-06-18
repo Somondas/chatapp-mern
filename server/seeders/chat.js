@@ -13,7 +13,7 @@ const createSingleChats = async (numChats) => {
       for (let j = i + 1; j < users.length; j++) {
         chatsPromise.push(
           Chat.create({
-            name: faker.lorem.words(2),
+            name: faker.person.words(2),
             members: [users[i], users[j]],
           })
         );

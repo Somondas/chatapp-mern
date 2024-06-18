@@ -388,7 +388,7 @@ const getMessages = TryCatch(async (req, res, next) => {
   const resultPerPage = 20;
   const skip = (page - 1) * resultPerPage;
 
-  const [messages, totalMessagesCount] = await Promise.app([
+  const [messages, totalMessagesCount] = await Promise.all([
     Message.find({ chat: chatId })
       .sort({ createdAt: -1 })
       .skip(skip)
