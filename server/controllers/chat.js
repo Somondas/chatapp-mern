@@ -393,13 +393,16 @@ const getMessages = TryCatch(async (req, res, next) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(resultPerPage)
-      .populate("sender", "name avatar")
+      .populate("sender", "name")
       .lean(),
     Message.countDocuments({ chat: chatId }),
   ]);
+
+  const totalPages = Math.ceil(totalMessagesCount / resultPerPage);
   return res.status(200).json({
     success: true,
     messages: messages.reverse(),
+    totalPages,
   });
 });
 // -> All Exports----------------------------------------------
