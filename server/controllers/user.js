@@ -60,10 +60,27 @@ const logout = TryCatch(async (req, res) => {
 });
 // >> Search User Controller-----------------------------------
 const searchUser = TryCatch(async (req, res) => {
-  const { name } = req.query;
+  const { name = "" } = req.query;
+
+  const myChats = await User.find({ groupChat: false, members: req.user });
+  // All Users from my chats means friends or people I have chatted with
+  const allUsersFromChats = myChats.flatMap((chat) => chat.members);
+
+  const allUsersExceptMeAndFriends = await User.find({
+    _id: { $nin: allUsersFromChats },
+    name: { $regex: name, $options: "i" },
+  });
+
+  const users = allUsersExceptMeAndFriends.map(({ _id, name, avatar }) => ({
+    _id,
+    name,
+    avatar,
+    avatar: avatar.url,
+  }));
+
   return res.status(200).json({
     success: true,
-    message: "User Logged Out Successfully",
+    allUsersExceptMeAndFriends,
   });
 });
 
