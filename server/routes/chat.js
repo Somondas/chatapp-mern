@@ -16,9 +16,11 @@ import {
 import { attachmentsMulter } from "../middlewares/multer.js";
 import {
   addMemberValidator,
+  chatIdValidator,
   getMessagesValidator,
   newGroupValidator,
   removeMemberValidator,
+  renameValidator,
   sendAttachmentsValidator,
   validateHandler,
 } from "../lib/validator.js";
@@ -43,7 +45,7 @@ app.delete(
   removeMembers
 );
 
-app.delete("/leave/:id", leaveGroup);
+app.delete("/leave/:id", chatIdValidator(), validateHandler, leaveGroup);
 
 //-> Send Attachment
 
@@ -57,6 +59,10 @@ app.post(
 
 app.get("/message/:id", getMessagesValidator(), validateHandler, getMessages);
 
-app.route("/:id").get(getChatDetails).put(renameGroup).delete(deleteChat);
+app
+  .route("/:id")
+  .get(chatIdValidator(), validateHandler, getChatDetails)
+  .put(renameValidator(), validateHandler, renameGroup)
+  .delete(chatIdValidator(), validateHandler, deleteChat);
 
 export default app;
