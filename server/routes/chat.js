@@ -16,6 +16,7 @@ import {
 import { attachmentsMulter } from "../middlewares/multer.js";
 import {
   addMemberValidator,
+  getMessagesValidator,
   newGroupValidator,
   removeMemberValidator,
   sendAttachmentsValidator,
@@ -54,7 +55,7 @@ app.post(
   sendAttachment
 );
 
-app.get("/message/:id", getMessages);
+app.get("/message/:id", getMessagesValidator(), validateHandler, getMessages);
 
 app.route("/:id").get(getChatDetails).put(renameGroup).delete(deleteChat);
 

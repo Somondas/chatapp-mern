@@ -72,6 +72,9 @@ const acceptRequestValidator = () => [
     .withMessage("Accept must be a boolean"),
 ];
 
+const getMessagesValidator = () => [
+  param("id", "Please Enter Chat ID").notEmpty(),
+];
 const adminLoginValidator = () => [
   body("secretKey", "Please Enter Secret Key").notEmpty(),
 ];
@@ -89,4 +92,5 @@ export {
   sendAttachmentsValidator,
   sendRequestValidator,
   validateHandler,
+  getMessagesValidator,
 };
