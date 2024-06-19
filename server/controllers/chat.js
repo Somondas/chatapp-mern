@@ -17,13 +17,13 @@ import { getOtherMembers } from "../lib/helper.js";
 // >> New Group Chat Controller-------------------------------
 const newGroupChat = TryCatch(async (req, res, next) => {
   const { name, members } = req.body;
-  if (members.length < 2) {
-    return next(
-      new ErrorHandler(
-        "You need to add atleast 3 members to create a group chat"
-      )
-    );
-  }
+  // if (members.length < 2) {
+  //   return next(
+  //     new ErrorHandler(
+  //       "You need to add atleast 3 members to create a group chat"
+  //     )
+  //   );
+  // }
   const allMembers = [...members, req.user];
   await Chat.create({
     name,
