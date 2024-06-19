@@ -14,7 +14,13 @@ import {
   sendAttachment,
 } from "../controllers/chat.js";
 import { attachmentsMulter } from "../middlewares/multer.js";
-import { newGroupValidator, validateHandler } from "../lib/validator.js";
+import {
+  addMemberValidator,
+  newGroupValidator,
+  removeMemberValidator,
+  sendAttachmentsValidator,
+  validateHandler,
+} from "../lib/validator.js";
 
 const app = express.Router();
 
@@ -27,15 +33,26 @@ app.get("/my", getMyChats);
 
 app.get("/my/groups", getMyGroups);
 
-app.put("/add-members", addMembers);
+app.put("/add-members", addMemberValidator, validateHandler, addMembers);
 
-app.delete("/remove-member", removeMembers);
+app.delete(
+  "/remove-member",
+  removeMemberValidator(),
+  validateHandler,
+  removeMembers
+);
 
 app.delete("/leave/:id", leaveGroup);
 
 //-> Send Attachment
 
-app.post("/message", attachmentsMulter, sendAttachment);
+app.post(
+  "/message",
+  attachmentsMulter,
+  sendAttachmentsValidator(),
+  validateHandler,
+  sendAttachment
+);
 
 app.get("/message/:id", getMessages);
 
