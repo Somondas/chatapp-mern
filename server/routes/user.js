@@ -5,6 +5,7 @@ import {
   logout,
   newUser,
   searchUser,
+  sendRequest,
 } from "../controllers/user.js";
 import { singleUpload } from "../middlewares/multer.js";
 import { isAuthenticated } from "../middlewares/auth.js";
@@ -24,5 +25,6 @@ app.use(isAuthenticated);
 app.get("/me", getMyProfile);
 app.get("/logout", logout);
 app.get("/search", searchUser);
+app.get("/send-request", sendRequest);
 
 export default app;
