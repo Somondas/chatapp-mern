@@ -2,9 +2,11 @@
 
 import { compare } from "bcrypt";
 import { User } from "../models/user.js";
-import { cookieOptions, sendToken } from "../utils/features.js";
+import { Request } from "../models/request.js";
+import { cookieOptions, emitEvent, sendToken } from "../utils/features.js";
 import { TryCatch } from "../middlewares/error.js";
 import { ErrorHandler } from "../utils/utility.js";
+import { NEW_REQUEST } from "../constants/events.js";
 
 // >> Regiser User Controller--------------------------------
 const newUser = async (req, res) => {
@@ -58,6 +60,7 @@ const logout = TryCatch(async (req, res) => {
       message: "User Logged Out Successfully",
     });
 });
+
 // >> Search User Controller-----------------------------------
 const searchUser = TryCatch(async (req, res) => {
   const { name = "" } = req.query;
@@ -83,30 +86,25 @@ const searchUser = TryCatch(async (req, res) => {
     allUsersExceptMeAndFriends,
   });
 });
-const sendRequest = TryCatch(async (req, res) => {
-  const { name = "" } = req.query;
 
-  const myChats = await User.find({ groupChat: false, members: req.user });
-  // All Users from my chats means friends or people I have chatted with
-  const allUsersFromChats = myChats.flatMap((chat) => chat.members);
+// >> Send Friend Request Controller---------------------------
+const sendFriendRequest = TryCatch(async (req, res) => {
+  const { userId } = req.body;
 
-  const allUsersExceptMeAndFriends = await User.find({
-    _id: { $nin: allUsersFromChats },
-    name: { $regex: name, $options: "i" },
+  const request = await Request.findOne({});
+
+  if (request) {
+    return next(new ErrorHandler("You already have a friend request", 404));
+  }
+  await Request.create({
+    sender: req.user,
+    receiver: userId,
   });
-
-  const users = allUsersExceptMeAndFriends.map(({ _id, name, avatar }) => ({
-    _id,
-    name,
-    avatar,
-    avatar: avatar.url,
-  }));
-
+  emitEvent(req, NEW_REQUEST, [userId]);
   return res.status(200).json({
     success: true,
-    allUsersExceptMeAndFriends,
+    message: "User Logged Out Successfully",
   });
 });
-
 // -> All Exports----------------------------------------------
-export { login, newUser, getMyProfile, logout, searchUser, sendRequest };
+export { login, newUser, getMyProfile, logout, searchUser, sendFriendRequest };

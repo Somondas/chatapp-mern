@@ -1,5 +1,4 @@
-import mongoose, { Schema, model } from "mongoose";
-// import { hash } from "bcrypt";
+import mongoose, { Schema, model, Types } from "mongoose";
 
 const schema = new Schema(
   {
@@ -12,12 +11,12 @@ const schema = new Schema(
     sender: {
       type: Types.ObjectId,
       ref: "User",
-      require: true,
+      required: true,
     },
     receiver: {
       type: Types.ObjectId,
       ref: "User",
-      require: true,
+      required: true,
     },
   },
   {
