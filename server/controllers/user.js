@@ -91,7 +91,12 @@ const searchUser = TryCatch(async (req, res) => {
 const sendFriendRequest = TryCatch(async (req, res) => {
   const { userId } = req.body;
 
-  const request = await Request.findOne({});
+  const request = await Request.findOne({
+    $or: [
+      { sender: req.user, receiver: userId },
+      { sender: userId, receiver: req.user },
+    ],
+  });
 
   if (request) {
     return next(new ErrorHandler("You already have a friend request", 404));
@@ -103,7 +108,7 @@ const sendFriendRequest = TryCatch(async (req, res) => {
   emitEvent(req, NEW_REQUEST, [userId]);
   return res.status(200).json({
     success: true,
-    message: "User Logged Out Successfully",
+    message: "Friend Request Sent Successfully",
   });
 });
 // -> All Exports----------------------------------------------
