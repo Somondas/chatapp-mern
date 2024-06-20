@@ -6,10 +6,12 @@ import {
   newUser,
   searchUser,
   sendFriendRequest,
+  acceptFriendRequest,
 } from "../controllers/user.js";
 import { singleUpload } from "../middlewares/multer.js";
 import { isAuthenticated } from "../middlewares/auth.js";
 import {
+  acceptRequestValidator,
   loginValidator,
   registerValidator,
   sendRequestValidator,
@@ -31,6 +33,12 @@ app.put(
   sendRequestValidator(),
   validateHandler,
   sendFriendRequest
+);
+app.put(
+  "/accept-request",
+  acceptRequestValidator(),
+  validateHandler,
+  acceptFriendRequest
 );
 
 export default app;

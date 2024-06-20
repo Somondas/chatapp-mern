@@ -7,6 +7,7 @@ import { cookieOptions, emitEvent, sendToken } from "../utils/features.js";
 import { TryCatch } from "../middlewares/error.js";
 import { ErrorHandler } from "../utils/utility.js";
 import { NEW_REQUEST } from "../constants/events.js";
+import { Chat } from "../models/chat.js";
 
 // >> Regiser User Controller--------------------------------
 const newUser = async (req, res) => {
@@ -111,5 +112,54 @@ const sendFriendRequest = TryCatch(async (req, res) => {
     message: "Friend Request Sent Successfully",
   });
 });
+
+// >> Accept Friend Request Controller-------------------------
+const acceptFriendRequest = TryCatch(async (req, res) => {
+  const { requestId, accept } = req.body;
+
+  const request = await Request.findById(requestId)
+    .populate("sender", "name")
+    .populate("receiver", "name");
+
+  if (!request) {
+    return next(new ErrorHandler("Friend Request not found", 404));
+  }
+
+  if (request.receiver.toString() !== req.user.toString()) {
+    return next(
+      new ErrorHandler("You are not authorized to accept this request", 400)
+    );
+  }
+  if (!accept) {
+    await request.remove();
+    return res.status(200).json({
+      success: true,
+      message: "Friend Request Rejected ",
+    });
+  }
+  const members = [request.sender._id, request.receiver._id];
+
+  await Promise.all([
+    Chat.create({
+      members,
+      name: `${request.sender.name}-${request.receiver.name}`,
+    }),
+    request.remove(),
+  ]);
+
+  // emitEvent(req, NEW_REQUEST, [userId]);
+  return res.status(200).json({
+    success: true,
+    message: "Friend Request Sent Successfully",
+  });
+});
 // -> All Exports----------------------------------------------
-export { login, newUser, getMyProfile, logout, searchUser, sendFriendRequest };
+export {
+  login,
+  newUser,
+  getMyProfile,
+  logout,
+  searchUser,
+  sendFriendRequest,
+  acceptFriendRequest,
+};
