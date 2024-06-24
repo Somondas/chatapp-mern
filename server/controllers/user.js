@@ -8,7 +8,7 @@ import { TryCatch } from "../middlewares/error.js";
 import { ErrorHandler } from "../utils/utility.js";
 import { NEW_REQUEST, REFETCH_CHATS } from "../constants/events.js";
 import { Chat } from "../models/chat.js";
-import { request } from "express";
+import { getOtherMembers } from "../lib/helper.js";
 
 // >> Regiser User Controller--------------------------------
 const newUser = async (req, res) => {
@@ -43,9 +43,9 @@ const login = TryCatch(async (req, res, next) => {
   sendToken(res, user, 200, `Welcome Back, ${user.name}`);
 });
 // >> Get My Profile Controller----------------------------
-// const getMyProfile = TryCatch(async (req, res, next) => {});
-const getMyProfile = TryCatch(async (req, res) => {
+const getMyProfile = TryCatch(async (req, res, next) => {
   const user = await User.findById(req.user);
+  if (!user) return next(new ErrorHandler("User not found", 404));
   res.status(200).json({
     success: true,
     user,
@@ -90,7 +90,7 @@ const searchUser = TryCatch(async (req, res) => {
 });
 
 // >> Send Friend Request Controller---------------------------
-const sendFriendRequest = TryCatch(async (req, res) => {
+const sendFriendRequest = TryCatch(async (req, res, next) => {
   const { userId } = req.body;
 
   const request = await Request.findOne({
@@ -115,7 +115,7 @@ const sendFriendRequest = TryCatch(async (req, res) => {
 });
 
 // >> Accept Friend Request Controller-------------------------
-const acceptFriendRequest = TryCatch(async (req, res) => {
+const acceptFriendRequest = TryCatch(async (req, res, next) => {
   const { requestId, accept } = req.body;
 
   const request = await Request.findById(requestId)
@@ -126,7 +126,7 @@ const acceptFriendRequest = TryCatch(async (req, res) => {
     return next(new ErrorHandler("Friend Request not found", 404));
   }
 
-  if (request.receiver.toString() !== req.user.toString()) {
+  if (request.receiver._id.toString() !== req.user.toString()) {
     return next(
       new ErrorHandler("You are not authorized to accept this request", 400)
     );
@@ -157,7 +157,7 @@ const acceptFriendRequest = TryCatch(async (req, res) => {
 });
 
 // >> Get All Notification Controller--------------------------
-const getAllNotifications = TryCatch(async (req, res) => {
+const getMyNotifications = TryCatch(async (req, res) => {
   const requests = await Request.find({
     receiver: req.user,
   }).populate("sender", "name avatar");
@@ -175,6 +175,41 @@ const getAllNotifications = TryCatch(async (req, res) => {
     allRequest,
   });
 });
+// >> Get My Friends Controller--------------------------
+const getMyFriends = TryCatch(async (req, res) => {
+  const chatId = req.query.chatId;
+
+  const chats = await Chat.find({
+    members: req.user,
+    groupChat: false,
+  }).populate("members", "name avatar");
+
+  const friends = chats.map(({ members }) => {
+    const otherUser = getOtherMembers(members, req.user);
+    return {
+      _id: otherUser._id,
+      name: otherUser.name,
+      avatar: otherUser.avatar.url,
+    };
+  });
+
+  if (chatId) {
+    const chat = await Chat.findById(chatId);
+    const availableFriends = friends.filter(
+      (friend) => !chat.members.includes(friend._id)
+    );
+
+    return res.status(200).json({
+      success: true,
+      friends: availableFriends,
+    });
+  } else {
+    return res.status(200).json({
+      success: true,
+      friends,
+    });
+  }
+});
 
 // -> All Exports----------------------------------------------
 export {
@@ -185,5 +220,6 @@ export {
   searchUser,
   sendFriendRequest,
   acceptFriendRequest,
-  getAllNotifications,
+  getMyNotifications,
+  getMyFriends,
 };
