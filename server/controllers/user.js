@@ -24,6 +24,11 @@ const newUser = async (req, res) => {
     password,
     avatar,
   });
+  const file = req.file;
+  // console.log(file);
+
+  if (!file)
+    return res.status(400).json({ message: "Please upload an Avatar" });
 
   // res.status(200).json({ message: "User created Successfully" });
 

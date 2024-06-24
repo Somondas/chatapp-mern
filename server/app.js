@@ -24,6 +24,8 @@ app.use(cookieParser());
 
 const mongoURI = process.env.MONGODB_URI;
 const port = process.env.PORT || 3000;
+const envMode = process.env.NODE_ENV.trim() || "PRODUCTION";
+export const adminSecretKey = process.env.ADMIN_SECRET_KEY || "adminSecretKey";
 connectDB(mongoURI);
 
 // ?? Seeders------------
@@ -39,5 +41,9 @@ app.use("/chat", chatRoutes);
 app.use("/admin", adminRoutes);
 app.use(errorMiddleware);
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(
+    `Server is running on port ${port} in ${process.env.NODE_ENV} mode`
+  );
 });
+
+export { envMode };
