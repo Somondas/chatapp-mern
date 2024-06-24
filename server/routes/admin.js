@@ -1,4 +1,10 @@
 import express from "express";
+import {
+  allChats,
+  allMessages,
+  allUsers,
+  getDashboardStats,
+} from "../controllers/admin.js";
 
 const app = express.Router();
 
@@ -7,8 +13,8 @@ app.get("/");
 app.post("/verify");
 app.get("/logout");
 
-app.get("/users");
-app.get("/chats");
-app.get("/messages");
-app.get("/stats");
+app.get("/users", allUsers);
+app.get("/chats", allChats);
+app.get("/messages", allMessages);
+app.get("/stats", getDashboardStats);
 export default app;
