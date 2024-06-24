@@ -163,6 +163,26 @@ const adminLogin = TryCatch(async (req, res, next) => {
       message: "Authenticated Successfully, Welcome BOSS",
     });
 });
+// >> Logout Controller---------------------------------------
+const adminLogout = TryCatch(async (req, res, next) => {
+  return res
+    .status(200)
+    .cookie("chattu-admin-token", "", {
+      ...cookieOptions,
+      maxAge: 0,
+    })
+    .json({
+      success: true,
+      message: "Logged Out Successfully",
+    });
+});
 
 // -> All Exports==============================================
-export { allUsers, allChats, allMessages, getDashboardStats, adminLogin };
+export {
+  allUsers,
+  allChats,
+  allMessages,
+  getDashboardStats,
+  adminLogin,
+  adminLogout,
+};
