@@ -6,8 +6,9 @@ import { Request } from "../models/request.js";
 import { cookieOptions, emitEvent, sendToken } from "../utils/features.js";
 import { TryCatch } from "../middlewares/error.js";
 import { ErrorHandler } from "../utils/utility.js";
-import { NEW_REQUEST } from "../constants/events.js";
+import { NEW_REQUEST, REFETCH_CHATS } from "../constants/events.js";
 import { Chat } from "../models/chat.js";
+import { request } from "express";
 
 // >> Regiser User Controller--------------------------------
 const newUser = async (req, res) => {
@@ -144,15 +145,37 @@ const acceptFriendRequest = TryCatch(async (req, res) => {
       members,
       name: `${request.sender.name}-${request.receiver.name}`,
     }),
-    request.remove(),
+    request.deleteOne(),
   ]);
-
+  emitEvent(req, REFETCH_CHATS, members);
   // emitEvent(req, NEW_REQUEST, [userId]);
   return res.status(200).json({
     success: true,
-    message: "Friend Request Sent Successfully",
+    message: "Friend Request Accepted",
+    senderId: request.sender._id,
   });
 });
+
+// >> Get All Notification Controller--------------------------
+const getAllNotifications = TryCatch(async (req, res) => {
+  const requests = await Request.find({
+    receiver: req.user,
+  }).populate("sender", "name avatar");
+
+  const allRequest = requests.map(({ _id, sender }) => ({
+    _id,
+    sender: {
+      _id: sender._id,
+      name: sender.name,
+      avatar: sender.avatar.url,
+    },
+  }));
+  return res.status(200).json({
+    success: true,
+    allRequest,
+  });
+});
+
 // -> All Exports----------------------------------------------
 export {
   login,
@@ -162,4 +185,5 @@ export {
   searchUser,
   sendFriendRequest,
   acceptFriendRequest,
+  getAllNotifications,
 };
