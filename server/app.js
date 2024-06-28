@@ -1,23 +1,21 @@
-import express from "express";
-import { connectDB } from "./utils/features.js";
-import dotenv from "dotenv";
-import { errorMiddleware } from "./middlewares/error.js";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+import express from "express";
+import { errorMiddleware } from "./middlewares/error.js";
+import { connectDB } from "./utils/features.js";
+import { Server } from "socket.io";
+import { createServer } from "http";
 
 // >> Route Imports------------------------------------------
-import userRoutes from "./routes/user.js";
-import chatRoutes from "./routes/chat.js";
 import adminRoutes from "./routes/admin.js";
-import { createUser } from "./seeders/user.js";
-import {
-  createGroupChats,
-  createMessages,
-  createMessagesInAChat,
-  createSingleChats,
-} from "./seeders/chat.js";
-import { faker } from "@faker-js/faker";
+import chatRoutes from "./routes/chat.js";
+import userRoutes from "./routes/user.js";
 // **Configuration-------------------------------
+
 const app = express();
+const server = createServer(app);
+const io = new Server(server, {});
+
 dotenv.config({ path: "./.env" });
 app.use(express.json());
 app.use(cookieParser());
@@ -40,7 +38,15 @@ app.use("/user", userRoutes);
 app.use("/chat", chatRoutes);
 app.use("/admin", adminRoutes);
 app.use(errorMiddleware);
-app.listen(port, () => {
+
+io.on("connection", (socket) => {
+  console.log("A User Connected", socket.id);
+
+  socket.on("disconnect", () => {
+    console.log("A User Disconnected");
+  });
+});
+server.listen(port, () => {
   console.log(
     `Server is running on port ${port} in ${process.env.NODE_ENV} mode`
   );
