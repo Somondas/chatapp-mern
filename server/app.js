@@ -55,8 +55,15 @@ io.on("connection", (socket) => {
         _id: user._id,
         name: user.name,
       },
+      chat: chatId,
+      createdAt: new Date().toISOString(),
     };
-    console.log("New message", data);
+    const messageForDB = {
+      content: message,
+      sender: user._id,
+      chat: chatId,
+    };
+    console.log("New message", messageForRealTime);
   });
 
   socket.on("disconnect", () => {
