@@ -24,7 +24,8 @@ app.use(cookieParser());
 const mongoURI = process.env.MONGODB_URI;
 const port = process.env.PORT || 3000;
 const envMode = process.env.NODE_ENV.trim() || "PRODUCTION";
-export const adminSecretKey = process.env.ADMIN_SECRET_KEY || "adminSecretKey";
+const adminSecretKey = process.env.ADMIN_SECRET_KEY || "adminSecretKey";
+const userSocketIDs = new Map();
 connectDB(mongoURI);
 
 // ?? Seeders------------
@@ -45,7 +46,8 @@ io.on("connection", (socket) => {
     _id: "fastfast",
     name: "fastfast",
   };
-  console.log("A User Connected", socket.id);
+  userSocketIDs.set(user._id.toString(), socket.id);
+  console.log(userSocketIDs);
 
   socket.on(NEW_MESSAGE, async ({ chatId, members, message }) => {
     const messageForRealTime = {
@@ -76,4 +78,4 @@ server.listen(port, () => {
   );
 });
 
-export { envMode };
+export { envMode, adminSecretKey, userSocketIDs };
