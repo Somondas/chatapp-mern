@@ -6,12 +6,13 @@ import { Server } from "socket.io";
 import { errorMiddleware } from "./middlewares/error.js";
 import { connectDB } from "./utils/features.js";
 import { v4 as uuid } from "uuid";
-// >> Route Imports------------------------------------------
+import { getSockets } from "./lib/helper.js";
 import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events.js";
+import { Message } from "./models/message.js";
+// >> Route Imports------------------------------------------
 import adminRoutes from "./routes/admin.js";
 import chatRoutes from "./routes/chat.js";
 import userRoutes from "./routes/user.js";
-import { getSockets } from "./lib/helper.js";
 // **Configuration-------------------------------
 
 const app = express();
@@ -41,7 +42,15 @@ app.use("/user", userRoutes);
 app.use("/chat", chatRoutes);
 app.use("/admin", adminRoutes);
 app.use(errorMiddleware);
-
+io.use((socket, next) => {
+  const { cookies } = socket.request;
+  const { secretKey } = cookies;
+  if (secretKey === adminSecretKey) {
+    next();
+  } else {
+    next(new Error("Unauthorized"));
+  }
+});
 io.on("connection", (socket) => {
   const user = {
     _id: "fastfast",
@@ -72,7 +81,11 @@ io.on("connection", (socket) => {
       message: messageForRealTime,
     });
     io.to(memberSocket).emit(NEW_MESSAGE_ALERT, { chatId });
-    console.log("New message", messageForRealTime);
+    try {
+      await Message.create(messageForDB);
+    } catch (error) {
+      console.log(error);
+    }
   });
 
   socket.on("disconnect", () => {
