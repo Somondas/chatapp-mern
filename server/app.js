@@ -7,10 +7,11 @@ import { errorMiddleware } from "./middlewares/error.js";
 import { connectDB } from "./utils/features.js";
 import { v4 as uuid } from "uuid";
 // >> Route Imports------------------------------------------
-import { NEW_MESSAGE } from "./constants/events.js";
+import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events.js";
 import adminRoutes from "./routes/admin.js";
 import chatRoutes from "./routes/chat.js";
 import userRoutes from "./routes/user.js";
+import { getSockets } from "./lib/helper.js";
 // **Configuration-------------------------------
 
 const app = express();
@@ -65,11 +66,18 @@ io.on("connection", (socket) => {
       sender: user._id,
       chat: chatId,
     };
+    const memberSocket = getSockets(members);
+    io.to(memberSocket).emit(NEW_MESSAGE, {
+      chatId,
+      message: messageForRealTime,
+    });
+    io.to(memberSocket).emit(NEW_MESSAGE_ALERT, { chatId });
     console.log("New message", messageForRealTime);
   });
 
   socket.on("disconnect", () => {
     console.log("A User Disconnected");
+    userSocketIDs.delete(user._id.toString());
   });
 });
 server.listen(port, () => {
