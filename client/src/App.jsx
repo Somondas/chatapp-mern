@@ -1,8 +1,8 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectRoute from "./components/auth/ProtectRoute.jsx";
 import { LayoutLoader } from "./components/layout/Loaders.jsx";
-
+import { server } from "./constants/config.js";
 const Home = lazy(() => import("./pages/Home.jsx"));
 const Login = lazy(() => import("./pages/Login.jsx"));
 const Chat = lazy(() => import("./pages/Chat.jsx"));
@@ -17,6 +17,9 @@ const MessageManagement = lazy(() =>
 );
 
 const App = () => {
+  useEffect(() => {
+    console.log(server);
+  }, []);
   const user = true;
   return (
     <BrowserRouter>
