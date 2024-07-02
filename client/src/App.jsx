@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectRoute from "./components/auth/ProtectRoute.jsx";
 import { LayoutLoader } from "./components/layout/Loaders.jsx";
 import { server } from "./constants/config.js";
+import axios from "axios";
+// |===============================================================================
 const Home = lazy(() => import("./pages/Home.jsx"));
 const Login = lazy(() => import("./pages/Login.jsx"));
 const Chat = lazy(() => import("./pages/Chat.jsx"));
@@ -18,7 +20,14 @@ const MessageManagement = lazy(() =>
 
 const App = () => {
   useEffect(() => {
-    console.log(server);
+    axios
+      .get(`${server}/api/v1/user/me`)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
   const user = true;
   return (

@@ -9,6 +9,7 @@ import { v4 as uuid } from "uuid";
 import { getSockets } from "./lib/helper.js";
 import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events.js";
 import { Message } from "./models/message.js";
+import cors from "cors";
 // >> Route Imports------------------------------------------
 import adminRoutes from "./routes/admin.js";
 import chatRoutes from "./routes/chat.js";
@@ -22,6 +23,12 @@ const io = new Server(server, {});
 dotenv.config({ path: "./.env" });
 app.use(express.json());
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "http://localhost:4173"],
+    credentials: true,
+  })
+);
 
 const mongoURI = process.env.MONGODB_URI;
 const port = process.env.PORT || 3000;
@@ -38,9 +45,9 @@ connectDB(mongoURI);
 // createMessages(10);
 // console.log(users);
 
-app.use("/user", userRoutes);
-app.use("/chat", chatRoutes);
-app.use("/admin", adminRoutes);
+app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/chat", chatRoutes);
+app.use("/api/v1/admin", adminRoutes);
 app.use(errorMiddleware);
 io.use((socket, next) => {
   const { cookies } = socket.request;
