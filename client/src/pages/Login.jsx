@@ -13,6 +13,8 @@ import { Camera as CameraAltIcon, PasswordRounded } from "@mui/icons-material";
 import { VisuallyHiddenInput } from "../components/styles/StyledComponents";
 import { useFileHandler, useInputValidation, useStrongPassword } from "6pp";
 import { usernameValidator } from "../../utils/validators";
+import axios from "axios";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -24,14 +26,33 @@ const Login = () => {
   const username = useInputValidation("", usernameValidator);
   const password = useInputValidation("");
 
+  const dispatch = useDispatch();
   // >> Functions for form Submit
 
   const handleSignUp = (e) => {
     e.preventDefalult();
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefalult();
+
+    const config = {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      const { data } = await axios.post(
+        `${server}/api/v1/user/login`,
+        {
+          username: username.value,
+          password: password.value,
+        },
+        config
+      );
+    } catch (error) {}
   };
 
   const avatar = useFileHandler("single");
