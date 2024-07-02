@@ -15,6 +15,9 @@ import { useFileHandler, useInputValidation, useStrongPassword } from "6pp";
 import { usernameValidator } from "../../utils/validators";
 import axios from "axios";
 import { useDispatch } from "react-redux";
+import { userExists } from "../redux/reducers/auth";
+import toast from "react-hot-toast";
+import { server } from "../constants/config";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -26,15 +29,15 @@ const Login = () => {
   const username = useInputValidation("", usernameValidator);
   const password = useInputValidation("");
 
-  const dispatch = useDispatch();
   // >> Functions for form Submit
 
   const handleSignUp = (e) => {
     e.preventDefalult();
   };
+  const dispatch = useDispatch();
 
   const handleLogin = async (e) => {
-    e.preventDefalult();
+    e.preventDefault();
 
     const config = {
       withCredentials: true,
@@ -52,7 +55,12 @@ const Login = () => {
         },
         config
       );
-    } catch (error) {}
+      dispatch(userExists(data.user));
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+      console.log(error);
+    }
   };
 
   const avatar = useFileHandler("single");

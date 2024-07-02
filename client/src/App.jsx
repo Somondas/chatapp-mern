@@ -6,6 +6,7 @@ import { server } from "./constants/config.js";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { userNotExists } from "./redux/reducers/auth.js";
+import { Toaster } from "react-hot-toast";
 // |===========================================================
 
 const Home = lazy(() => import("./pages/Home.jsx"));
@@ -64,6 +65,7 @@ const App = () => {
           <Route path="/admin/messages" element={<MessageManagement />} />
         </Routes>
       </Suspense>
+      <Toaster position="bottom-center" />
     </BrowserRouter>
   );
 };
