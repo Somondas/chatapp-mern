@@ -31,8 +31,22 @@ const Login = () => {
 
   // >> Functions for form Submit
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefalult();
+
+    const formData = new FormData();
+    formData.append("avatar", avatar.file);
+    formData.append("name", name.value);
+    formData.append("bio", bio.value);
+    formData.append("username", username.value);
+    formData.append("password", password.value);
+
+    try {
+      const { data } = await axios.post(
+        `${server}/api/v1/user/signup`,
+        formData
+      );
+    } catch (error) {}
   };
   const dispatch = useDispatch();
 
@@ -55,7 +69,7 @@ const Login = () => {
         },
         config
       );
-      dispatch(userExists(data.user));
+      dispatch(userExists(true));
       toast.success(data.message);
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong");
