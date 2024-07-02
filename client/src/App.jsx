@@ -4,7 +4,10 @@ import ProtectRoute from "./components/auth/ProtectRoute.jsx";
 import { LayoutLoader } from "./components/layout/Loaders.jsx";
 import { server } from "./constants/config.js";
 import axios from "axios";
-// |===============================================================================
+import { useDispatch, useSelector } from "react-redux";
+import { userNotExists } from "./redux/reducers/auth.js";
+// |===========================================================
+
 const Home = lazy(() => import("./pages/Home.jsx"));
 const Login = lazy(() => import("./pages/Login.jsx"));
 const Chat = lazy(() => import("./pages/Chat.jsx"));
@@ -19,6 +22,8 @@ const MessageManagement = lazy(() =>
 );
 
 const App = () => {
+  const { user, loader } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   useEffect(() => {
     axios
       .get(`${server}/api/v1/user/me`)
@@ -26,11 +31,13 @@ const App = () => {
         console.log(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
+        dispatch(userNotExists());
       });
-  }, []);
-  const user = true;
-  return (
+  }, [dispatch]);
+  return loader ? (
+    <LayoutLoader />
+  ) : (
     <BrowserRouter>
       <Suspense fallback={<LayoutLoader />}>
         <Routes>
