@@ -28,6 +28,7 @@ const Login = () => {
   const bio = useInputValidation("");
   const username = useInputValidation("", usernameValidator);
   const password = useInputValidation("");
+  const dispatch = useDispatch();
 
   // >> Functions for form Submit
 
@@ -40,15 +41,24 @@ const Login = () => {
     formData.append("bio", bio.value);
     formData.append("username", username.value);
     formData.append("password", password.value);
-
+    const config = {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
     try {
       const { data } = await axios.post(
-        `${server}/api/v1/user/signup`,
-        formData
+        `${server}/api/v1/user/new`,
+        formData,
+        config
       );
-    } catch (error) {}
+      dispatch(userExists(true));
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    }
   };
-  const dispatch = useDispatch();
 
   const handleLogin = async (e) => {
     e.preventDefault();
