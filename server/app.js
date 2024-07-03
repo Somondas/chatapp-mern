@@ -10,6 +10,7 @@ import { getSockets } from "./lib/helper.js";
 import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events.js";
 import { Message } from "./models/message.js";
 import cors from "cors";
+import { v2 as cloudinary } from "cloudinary";
 // >> Route Imports------------------------------------------
 import adminRoutes from "./routes/admin.js";
 import chatRoutes from "./routes/chat.js";
@@ -41,6 +42,11 @@ const adminSecretKey = process.env.ADMIN_SECRET_KEY || "adminSecretKey";
 const userSocketIDs = new Map();
 connectDB(mongoURI);
 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 // ?? Seeders------------
 // createUser(10);
 // createGroupChats(10);

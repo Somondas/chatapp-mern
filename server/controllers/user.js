@@ -3,7 +3,12 @@
 import { compare } from "bcrypt";
 import { User } from "../models/user.js";
 import { Request } from "../models/request.js";
-import { cookieOptions, emitEvent, sendToken } from "../utils/features.js";
+import {
+  cookieOptions,
+  emitEvent,
+  sendToken,
+  uploadFilesToCloudinary,
+} from "../utils/features.js";
 import { TryCatch } from "../middlewares/error.js";
 import { ErrorHandler } from "../utils/utility.js";
 import { NEW_REQUEST, REFETCH_CHATS } from "../constants/events.js";
@@ -13,10 +18,10 @@ import { getOtherMembers } from "../lib/helper.js";
 // >> Regiser User Controller--------------------------------
 const newUser = async (req, res) => {
   const { name, username, password, bio } = req.body;
-  const avatar = {
-    public_id: "fkjasdklf",
-    url: "fasdfasdf",
-  };
+  // const avatar = {
+  //   public_id: "fkjasdklf",
+  //   url: "fasdfasdf",
+  // };
   const user = await User.create({
     name,
     bio,
@@ -29,6 +34,12 @@ const newUser = async (req, res) => {
 
   if (!file)
     return res.status(400).json({ message: "Please upload an Avatar" });
+  const result = await uploadFilesToCloudinary([file]);
+
+  const avatar = {
+    public_id: result[0].public_id,
+    url: result[0].secureUrl,
+  };
 
   // res.status(200).json({ message: "User created Successfully" });
 

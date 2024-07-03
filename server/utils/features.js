@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
+import { v4 as uuid } from "uuid";
 
 dotenv.config({ path: "./.env" });
 
@@ -34,6 +35,29 @@ const emitEvent = (req, event, users, data) => {
   console.log("Emmiting event", event);
 };
 
+const uploadFilesToCloudinary = async (files = []) => {
+  const uploadPromises = files.map((file) => {
+    return new Promise((resolve, reject) => {
+      cloudinary.uploader.upload(
+        file.path,
+        {
+          folder: "chattu",
+          public_id: uuid(),
+          overwrite: true,
+          resource_type: "auto",
+        },
+        (error, result) => {
+          if (error) {
+            console.log("Error uploading file: ", error);
+            reject(error);
+          }
+          resolve(result);
+        }
+      );
+    });
+  });
+  // Upload Files
+};
 const deleteFilesFromCloudinary = async (public_ids) => {
   // Delete Files
 };
@@ -43,4 +67,5 @@ export {
   cookieOptions,
   emitEvent,
   deleteFilesFromCloudinary,
+  uploadFilesToCloudinary,
 };
