@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { v4 as uuid } from "uuid";
+import { v2 as cloudinary } from "cloudinary";
+import { getBase64 } from "../lib/helper";
 
 dotenv.config({ path: "./.env" });
 
@@ -39,11 +41,11 @@ const uploadFilesToCloudinary = async (files = []) => {
   const uploadPromises = files.map((file) => {
     return new Promise((resolve, reject) => {
       cloudinary.uploader.upload(
-        file.path,
+        getBase64(file),
         {
-          folder: "chattu",
+          // folder: "chattu",
           public_id: uuid(),
-          overwrite: true,
+          // overwrite: true,
           resource_type: "auto",
         },
         (error, result) => {
@@ -57,6 +59,18 @@ const uploadFilesToCloudinary = async (files = []) => {
     });
   });
   // Upload Files
+  try {
+    const result = await Promise.all(uploadPromises);
+    const formattedResults = result.map((result) => {
+      return {
+        public_id: result.public_id,
+        url: result.secure_url,
+      };
+    });
+    return formattedResults;
+  } catch (error) {
+    throw new Error("Error uploading file to cloudinary ", error);
+  }
 };
 const deleteFilesFromCloudinary = async (public_ids) => {
   // Delete Files

@@ -38,7 +38,7 @@ const newUser = async (req, res) => {
 
   const avatar = {
     public_id: result[0].public_id,
-    url: result[0].secureUrl,
+    url: result[0].url,
   };
 
   // res.status(200).json({ message: "User created Successfully" });
