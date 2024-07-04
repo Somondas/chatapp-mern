@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { v4 as uuid } from "uuid";
 import { v2 as cloudinary } from "cloudinary";
-import { getBase64 } from "../lib/helper";
+import { getBase64 } from "../lib/helper.js";
 
 dotenv.config({ path: "./.env" });
 
