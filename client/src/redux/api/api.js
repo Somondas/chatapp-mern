@@ -14,7 +14,9 @@ const api = createApi({
       }),
       providesTags: ["Chat"],
     }),
+    invalidateTags: ["Chat"],
   }),
 });
 
 export default api;
+export const { useMyChatsQuery } = api;
