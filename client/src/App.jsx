@@ -31,10 +31,7 @@ const App = () => {
       .then(({ data }) => {
         dispatch(userExists(data.user));
       })
-      .catch((err) => {
-        // console.log(err);
-        dispatch(userNotExists());
-      });
+      .catch((err) => dispatch(userNotExists()));
   }, [dispatch]);
   return loader ? (
     <LayoutLoader />
