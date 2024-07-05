@@ -48,14 +48,15 @@ const getMyChats = TryCatch(async (req, res, next) => {
   );
 
   const transformedChats = chats.map(({ _id, name, members, groupChat }) => {
-    const otherMembers = getOtherMembers(members, req.user);
+    const otherMember = getOtherMembers(members, req.user);
+
     return {
       _id,
       groupChat,
       avatar: groupChat
         ? members.slice(0, 3).map(({ avatar }) => avatar.url)
-        : [otherMembers.avatar.url],
-      name: groupChat ? name : otherMembers.name,
+        : [otherMember.avatar.url],
+      name: groupChat ? name : otherMember.name,
       members: members.reduce((prev, curr) => {
         if (curr._id.toString() !== req.user.toString()) {
           prev.push(curr._id);
@@ -64,7 +65,8 @@ const getMyChats = TryCatch(async (req, res, next) => {
       }, []),
     };
   });
-  res.status(200).json({
+
+  return res.status(200).json({
     success: true,
     chats: transformedChats,
   });
