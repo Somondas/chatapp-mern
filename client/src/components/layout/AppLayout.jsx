@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "./Header";
 import Title from "../shared/Title";
-import { Grid, Skeleton } from "@mui/material";
+import { Drawer, Grid, Skeleton } from "@mui/material";
 import ChatList from "../specific/ChatList";
 import { samepleChats } from "../../constants/sampleData";
 import { useParams } from "react-router-dom";
@@ -25,7 +25,7 @@ const AppLayout = () => (WrappedComponent) => {
       e.preventDefault();
       console.log("Delete Chat", _id, groupChat);
     };
-    const handleMobile = () => {
+    const handleMobileClose = () => {
       // console.log("Mobile");
       dispatch(setIsMobile(false));
     };
@@ -33,6 +33,18 @@ const AppLayout = () => (WrappedComponent) => {
       <div>
         <Title />
         <Header />
+        {isLoading ? (
+          <Skeleton />
+        ) : (
+          <Drawer open={isMobile} onCanPlay={handleMobileClose}>
+            <ChatList
+              w="70vw"
+              chats={data?.chats}
+              chatId={chatId}
+              handleDeleteChat={handleDeleteChat}
+            />
+          </Drawer>
+        )}
         <Grid container height={"calc(100vh - 4rem)"}>
           <Grid
             item
