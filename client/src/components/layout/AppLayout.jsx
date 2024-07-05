@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "./Header";
 import Title from "../shared/Title";
-import { Grid } from "@mui/material";
+import { Grid, Skeleton } from "@mui/material";
 import ChatList from "../specific/ChatList";
 import { samepleChats } from "../../constants/sampleData";
 import { useParams } from "react-router-dom";
@@ -35,18 +35,15 @@ const AppLayout = () => (WrappedComponent) => {
             }}
             height={"100%"}
           >
-            <ChatList
-              chats={samepleChats}
-              chatId={chatId}
-              // newMessagesAlert={[
-              //   {
-              //     chatId,
-              //     count: 1,
-              //   },
-              // ]}
-              // onlineUsers={["1", "2"]}
-              handleDeleteChat={handleDeleteChat}
-            />
+            {isLoading ? (
+              <Skeleton />
+            ) : (
+              <ChatList
+                chats={data?.chats}
+                chatId={chatId}
+                handleDeleteChat={handleDeleteChat}
+              />
+            )}
           </Grid>
           <Grid item xs={12} md={5} sm={8} lg={6} height={"100%"}>
             <WrappedComponent {...props} />
