@@ -7,12 +7,16 @@ import { samepleChats } from "../../constants/sampleData";
 import { useParams } from "react-router-dom";
 import Profile from "../specific/Profile";
 import { useMyChatsQuery } from "../../redux/api/api";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsMobile } from "../../redux/reducers/misc";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
     const params = useParams();
     const chatId = params.chatId;
+    const dispatch = useDispatch();
 
+    const { isMobile } = useSelector((state) => state.misc);
     const { isLoading, data, isError, error, refetch } = useMyChatsQuery("");
 
     console.log(data);
@@ -20,6 +24,10 @@ const AppLayout = () => (WrappedComponent) => {
     const handleDeleteChat = (e, _id, groupChat) => {
       e.preventDefault();
       console.log("Delete Chat", _id, groupChat);
+    };
+    const handleMobile = () => {
+      // console.log("Mobile");
+      dispatch(setIsMobile(false));
     };
     return (
       <div>
