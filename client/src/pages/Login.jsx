@@ -21,6 +21,7 @@ import { server } from "../constants/config";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const { isLoading, setIsLoading } = useState(false);
   // ? setIsLogin((prev => !prev)), this will make the previous value of isLogin to be toggled. Eg: true will became false and false will became true
   const toggleLogin = () => setIsLogin((prev) => !prev);
 
@@ -32,6 +33,32 @@ const Login = () => {
 
   // >> Functions for form Submit
 
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    const config = {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    console.log(server);
+    try {
+      const { data } = await axios.post(
+        `${server}/api/v1/user/login`,
+        {
+          username: username.value,
+          password: password.value,
+        },
+        config
+      );
+      dispatch(userExists(true));
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+      console.log(error);
+    }
+  };
   const handleSignUp = async (e) => {
     e.preventDefalult();
 
@@ -57,38 +84,6 @@ const Login = () => {
       toast.success(data.message);
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong");
-    }
-  };
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-
-    const config = {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    try {
-      const { data } = await axios.post(
-        `${server}/api/v1/user/login`,
-        {
-          username: username.value,
-          password: password.value,
-        },
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      dispatch(userExists(true));
-      toast.success(data.message);
-    } catch (error) {
-      toast.error(error?.response?.data?.message || "Something went wrong");
-      console.log(error);
     }
   };
 
