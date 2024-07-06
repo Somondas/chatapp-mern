@@ -15,18 +15,25 @@ import UserItem from "../shared/UserItem";
 import { sampleUsers } from "../../constants/sampleData";
 import { orange } from "@mui/material/colors";
 import { orangeLight } from "../../constants/color";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsSearch } from "../../redux/reducers/misc";
 // |===========================================================
 
 const SearchDialog = () => {
   const search = useInputValidation("");
-
+  const dispatch = useDispatch();
   const [users, setUsers] = useState(sampleUsers);
   const addFriendHandler = (id) => {
     console.log(id);
   };
+  const { isSearch } = useSelector((state) => state.misc);
+
+  const searchCloseHandler = () => {
+    dispatch(setIsSearch(false));
+  };
   let isLoadingSendFriendRequest = false;
   return (
-    <Dialog open>
+    <Dialog open={isSearch} onClose={searchCloseHandler}>
       <Stack
         sx={{
           borderBottom: `.5rem solid #ea7070`,
