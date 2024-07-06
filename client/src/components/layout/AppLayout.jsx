@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "./Header";
 import Title from "../shared/Title";
 import { Drawer, Grid, Skeleton } from "@mui/material";
@@ -9,6 +9,7 @@ import Profile from "../specific/Profile";
 import { useMyChatsQuery } from "../../redux/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsMobile } from "../../redux/reducers/misc";
+import toast from "react-hot-toast";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
