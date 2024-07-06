@@ -4,7 +4,7 @@ import { server } from "../../constants/config";
 const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: `${server}/api/v1/` }),
-  tagTypes: ["Chat"],
+  tagTypes: ["Chat", "User"],
 
   endpoints: (builder) => ({
     myChats: builder.query({
@@ -14,7 +14,14 @@ const api = createApi({
       }),
       providesTags: ["Chat"],
     }),
-    // invalidateTags: ["Chat"],
+    searchUser: builder.query({
+      query: (username) => ({
+        url: `user/search/${username}`,
+        // method: "GET",
+        credentials: "include",
+      }),
+      providesTags: ["User"],
+    }),
   }),
 });
 
