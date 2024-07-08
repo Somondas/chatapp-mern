@@ -38,8 +38,9 @@ const SearchDialog = () => {
     const timeOutId = setTimeout(() => {
       // console.log(search.value);
       searchUser(search.value).then(({ data }) => {
-        console.log(data);
-        // setUsers(data);
+        // console.log(data);
+
+        setUsers(data.users);
       });
     }, 1000);
     return () => {
