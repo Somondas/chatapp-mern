@@ -40,7 +40,7 @@ const Header = () => {
   const handleMobile = () => {
     dispatch(setIsMobile(true));
   };
-  const openSearchDialog = () => {
+  const openSearch = () => {
     dispatch(setIsSearch(true));
   };
   const openNewGroup = () => {
@@ -101,7 +101,7 @@ const Header = () => {
               <IconBtn
                 title={"Search"}
                 icon={<SearchIcon />}
-                onClick={openSearchDialog}
+                onClick={openSearch}
               />
               <IconBtn
                 title={"New Group"}

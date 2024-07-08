@@ -8,7 +8,7 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useInputValidation } from "6pp";
 import { Search as SearchIcon } from "@mui/icons-material";
 import UserItem from "../shared/UserItem";
@@ -17,6 +17,7 @@ import { orange } from "@mui/material/colors";
 import { orangeLight } from "../../constants/color";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsSearch } from "../../redux/reducers/misc";
+import { useLazySearchUserQuery } from "../../redux/api/api";
 // |===========================================================
 
 const SearchDialog = () => {
@@ -28,9 +29,19 @@ const SearchDialog = () => {
   };
   const { isSearch } = useSelector((state) => state.misc);
 
+  const [searchUser] = useLazySearchUserQuery();
+
   const searchCloseHandler = () => {
     dispatch(setIsSearch(false));
   };
+  useEffect(() => {
+    const timeOutId = setTimeout(() => {
+      console.log(search.value);
+    }, 1000);
+    return () => {
+      clearTimeout(timeOutId);
+    };
+  }, [search.value]);
   let isLoadingSendFriendRequest = false;
   return (
     <Dialog open={isSearch} onClose={searchCloseHandler}>
