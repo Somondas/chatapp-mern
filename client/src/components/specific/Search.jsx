@@ -37,6 +37,10 @@ const SearchDialog = () => {
   useEffect(() => {
     const timeOutId = setTimeout(() => {
       // console.log(search.value);
+      searchUser(search.value).then(({ data }) => {
+        console.log(data);
+        // setUsers(data);
+      });
     }, 1000);
     return () => {
       clearTimeout(timeOutId);

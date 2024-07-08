@@ -16,7 +16,7 @@ const api = createApi({
     }),
     searchUser: builder.query({
       query: (name) => ({
-        url: `user/search/${name}`,
+        url: `user/search?name=${name}`,
         // method: "GET",
         credentials: "include",
       }),
