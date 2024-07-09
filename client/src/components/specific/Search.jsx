@@ -1,35 +1,46 @@
+import { useInputValidation } from "6pp";
+import { Search as SearchIcon } from "@mui/icons-material";
 import {
   Dialog,
   DialogTitle,
   InputAdornment,
   List,
-  ListItem,
-  ListItemText,
   Stack,
   TextField,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useInputValidation } from "6pp";
-import { Search as SearchIcon } from "@mui/icons-material";
-import UserItem from "../shared/UserItem";
-import { sampleUsers } from "../../constants/sampleData";
-import { orange } from "@mui/material/colors";
-import { orangeLight } from "../../constants/color";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  useLazySearchUserQuery,
+  useSendFriendRequestMutation,
+} from "../../redux/api/api";
 import { setIsSearch } from "../../redux/reducers/misc";
-import { useLazySearchUserQuery } from "../../redux/api/api";
+import UserItem from "../shared/UserItem";
 // |===========================================================
 
 const SearchDialog = () => {
   const search = useInputValidation("");
   const dispatch = useDispatch();
   const [users, setUsers] = useState([]);
-  const addFriendHandler = (id) => {
+  const addFriendHandler = async (id) => {
     console.log(id);
+    try {
+      const res = await sendFriendRequest({ userId: id });
+      if (res.data) {
+        toast.success("Friend request sent");
+        console.log(res.data);
+      } else {
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong");
+    }
   };
   const { isSearch } = useSelector((state) => state.misc);
 
   const [searchUser] = useLazySearchUserQuery();
+  const [sendFriendRequest] = useSendFriendRequestMutation();
 
   const searchCloseHandler = () => {
     dispatch(setIsSearch(false));
