@@ -23,7 +23,7 @@ import { useLazySearchUserQuery } from "../../redux/api/api";
 const SearchDialog = () => {
   const search = useInputValidation("");
   const dispatch = useDispatch();
-  const [users, setUsers] = useState(sampleUsers);
+  const [users, setUsers] = useState([]);
   const addFriendHandler = (id) => {
     console.log(id);
   };
@@ -38,9 +38,9 @@ const SearchDialog = () => {
     const timeOutId = setTimeout(() => {
       // console.log(search.value);
       searchUser(search.value).then(({ data }) => {
-        // console.log(data);
+        console.log(data);
 
-        setUsers(data.users);
+        setUsers(data.allUsersExceptMeAndFriends);
       });
     }, 1000);
     return () => {
