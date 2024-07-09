@@ -17,32 +17,25 @@ import {
 } from "../../redux/api/api";
 import { setIsSearch } from "../../redux/reducers/misc";
 import UserItem from "../shared/UserItem";
+import { useAsyncMutation } from "../../hooks/hook";
 // |===========================================================
 
 const SearchDialog = () => {
   const search = useInputValidation("");
   const dispatch = useDispatch();
   const [users, setUsers] = useState([]);
-  const addFriendHandler = async (id) => {
-    console.log(id);
-    try {
-      const res = await sendFriendRequest({ userId: id });
-      if (res.data) {
-        toast.success("Friend request sent");
-        console.log(res.data);
-      } else {
-        toast.error(res?.error?.data?.message || "Something went wrong");
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong");
-    }
-  };
+
   const { isSearch } = useSelector((state) => state.misc);
 
   const [searchUser] = useLazySearchUserQuery();
-  const [sendFriendRequest] = useSendFriendRequestMutation();
-
+  const [sendFriendRequest, isLoadingSendFriendRequest] = useAsyncMutation(
+    useSendFriendRequestMutation
+  );
+  const addFriendHandler = async (id) => {
+    await sendFriendRequest("Sending friend request...", {
+      userId: id,
+    });
+  };
   const searchCloseHandler = () => {
     dispatch(setIsSearch(false));
   };
@@ -59,7 +52,7 @@ const SearchDialog = () => {
       clearTimeout(timeOutId);
     };
   }, [search.value]);
-  let isLoadingSendFriendRequest = false;
+  // let isLoadingSendFriendRequest = false;
   return (
     <Dialog open={isSearch} onClose={searchCloseHandler}>
       <Stack

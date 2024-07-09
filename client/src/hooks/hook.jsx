@@ -41,6 +41,6 @@ const useAsyncMutation = (mutationHook) => {
     }
   };
 
-  return executeMutation, isLoading, data;
+  return [executeMutation, isLoading, data];
 };
 export { useErrors, useAsyncMutation };
