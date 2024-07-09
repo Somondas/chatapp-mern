@@ -119,7 +119,7 @@ const sendFriendRequest = TryCatch(async (req, res, next) => {
   });
 
   if (request) {
-    return next(new ErrorHandler("You already have a friend request", 404));
+    return next(new ErrorHandler("Friend Request Already Send", 404));
   }
   await Request.create({
     sender: req.user,

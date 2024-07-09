@@ -11,4 +11,5 @@ const useErrors = (errors = []) => {
     });
   }, [errors]);
 };
-export { useErrors };
+const useAsyncMutation = (mutationHook) => {};
+export { useErrors, useAsyncMutation };

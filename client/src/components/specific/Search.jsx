@@ -31,6 +31,7 @@ const SearchDialog = () => {
         toast.success("Friend request sent");
         console.log(res.data);
       } else {
+        toast.error(res?.error?.data?.message || "Something went wrong");
       }
     } catch (error) {
       console.log(error);
