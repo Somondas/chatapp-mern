@@ -21,6 +21,7 @@ const ChatsManagement = lazy(() => import("./pages/admin/ChatManagement.jsx"));
 const MessageManagement = lazy(() =>
   import("./pages/admin/MessageManagement.jsx")
 );
+import { SocketProvider } from "./socket.jsx";
 
 const App = () => {
   const { user, loader } = useSelector((state) => state.auth);
@@ -37,7 +38,13 @@ const App = () => {
     <BrowserRouter>
       <Suspense fallback={<LayoutLoader />}>
         <Routes>
-          <Route element={<ProtectRoute user={user} />}>
+          <Route
+            element={
+              <SocketProvider>
+                <ProtectRoute user={user} />
+              </SocketProvider>
+            }
+          >
             <Route path="/" element={<Home />} />
             <Route path="/chat/:chatId" element={<Chat />} />
             <Route path="/groups" element={<Groups />} />

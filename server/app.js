@@ -15,6 +15,7 @@ import { v2 as cloudinary } from "cloudinary";
 import adminRoutes from "./routes/admin.js";
 import chatRoutes from "./routes/chat.js";
 import userRoutes from "./routes/user.js";
+import { corsOptions } from "./constants/config.js";
 // **Configuration-------------------------------
 
 const app = express();
@@ -24,16 +25,7 @@ const io = new Server(server, {});
 dotenv.config({ path: "./.env" });
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:4173",
-      process.env.CLIENT_URL,
-    ],
-    credentials: true,
-  })
-);
+app.use(cors(corsOptions));
 
 const mongoURI = process.env.MONGODB_URI;
 const port = process.env.PORT || 3000;
