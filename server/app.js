@@ -20,7 +20,9 @@ import { corsOptions } from "./constants/config.js";
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server, {});
+const io = new Server(server, {
+  cors: corsOptions,
+});
 
 dotenv.config({ path: "./.env" });
 app.use(express.json());
