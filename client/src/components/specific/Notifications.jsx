@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { sampleNotifications } from "../../constants/sampleData";
+import toast from "react-hot-toast";
 import { useGetNotificationsQuery } from "../../redux/api/api";
 import { useAcceptFriendRequestMutation } from "../../redux/api/api";
 import { useErrors } from "../../hooks/hook";
@@ -29,9 +30,16 @@ const NotificationDialog = () => {
     try {
       const res = await acceptRequest({ requestId: _id, accept });
       if (res.data?.success) {
+        console.log("Use SocketHere");
+        toast.success(res.data.message);
       } else {
+        toast.error(res.data?.message || "Something went wrong");
       }
-    } catch (error) {}
+    } catch (error) {
+      toast.error("Something went wrong");
+
+      console.log(error);
+    }
   };
 
   const closeHandler = () => {
