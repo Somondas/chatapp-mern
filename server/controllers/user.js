@@ -13,7 +13,7 @@ import { TryCatch } from "../middlewares/error.js";
 import { ErrorHandler } from "../utils/utility.js";
 import { NEW_REQUEST, REFETCH_CHATS } from "../constants/events.js";
 import { Chat } from "../models/chat.js";
-import { getOtherMembers } from "../lib/helper.js";
+import { getOtherMember } from "../lib/helper.js";
 
 // >> Regiser User Controller--------------------------------
 const newUser = async (req, res) => {
