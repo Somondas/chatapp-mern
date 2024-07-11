@@ -27,8 +27,13 @@ const NotificationDialog = () => {
 
   const [acceptRequest] = useAcceptFriendRequestMutation();
   const frienRequestHandler = async ({ _id, accept }) => {
+    console.log(_id);
+    console.log(accept);
+    dispatch(setIsNotification(false));
+
     try {
       const res = await acceptRequest({ requestId: _id, accept });
+      console.log(res);
       if (res.data?.success) {
         console.log("Use SocketHere");
         toast.success(res.data.message);
@@ -37,7 +42,6 @@ const NotificationDialog = () => {
       }
     } catch (error) {
       toast.error("Something went wrong");
-
       console.log(error);
     }
   };
@@ -58,7 +62,7 @@ const NotificationDialog = () => {
               data?.allRequest.map((i) => (
                 <NotificationItem
                   sender={i.sender}
-                  message={i._id}
+                  _id={i._id}
                   handler={frienRequestHandler}
                   key={i._id}
                 />
