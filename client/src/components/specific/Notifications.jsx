@@ -9,9 +9,17 @@ import {
   Typography,
 } from "@mui/material";
 import { sampleNotifications } from "../../constants/sampleData";
+import { useGetNotifcationsQuery } from "../../redux/api/api";
+import { useErrors } from "../../hooks/hook";
 
 // |========================================================-=-
 const NotificationDialog = () => {
+  const { isLoading, data, error, isError } = useGetNotifcationsQuery();
+
+  useErrors([{ error, isError }]);
+
+  console.log(data);
+
   const frienRequestHandler = ({ _id, accept }) => {
     console.log("friendRequestHandler");
   };

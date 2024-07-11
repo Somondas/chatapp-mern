@@ -31,6 +31,13 @@ const api = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+    getNotifcations: builder.mutation({
+      query: (data) => ({
+        url: `user/notifications`,
+        credentials: "include",
+      }),
+      keepUnusedDataFor: 0,
+    }),
   }),
 });
 
@@ -39,4 +46,5 @@ export const {
   useMyChatsQuery,
   useLazySearchUserQuery,
   useSendFriendRequestMutation,
+  useGetNotifcationsQuery,
 } = api;
