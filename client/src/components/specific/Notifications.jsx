@@ -5,39 +5,53 @@ import {
   Dialog,
   DialogTitle,
   ListItem,
+  Skeleton,
   Stack,
   Typography,
 } from "@mui/material";
 import { sampleNotifications } from "../../constants/sampleData";
-import { useGetNotifcationsQuery } from "../../redux/api/api";
+import { useGetNotificationsQuery } from "../../redux/api/api";
 import { useErrors } from "../../hooks/hook";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsNotification } from "../../redux/reducers/misc";
 
 // |========================================================-=-
 const NotificationDialog = () => {
-  const { isLoading, data, error, isError } = useGetNotifcationsQuery();
+  const dispatch = useDispatch();
+  const { isNotification } = useSelector((state) => state.misc);
+  const { isLoading, data, error, isError } = useGetNotificationsQuery();
 
   useErrors([{ error, isError }]);
-
-  console.log(data);
 
   const frienRequestHandler = ({ _id, accept }) => {
     console.log("friendRequestHandler");
   };
+
+  const closeHandler = () => {
+    dispatch(setIsNotification(false));
+  };
+
   return (
-    <Dialog open>
+    <Dialog open={isNotification} onClose={closeHandler}>
       <Stack p={{ xs: "1rem", sm: "2rem" }} maxWidth={"25rem"}>
         <DialogTitle>Notifications</DialogTitle>
-        {sampleNotifications.length > 0 ? (
-          sampleNotifications.map((i) => (
-            <NotificationItem
-              sender={i.sender}
-              message={i._id}
-              handler={frienRequestHandler}
-              key={i._id}
-            />
-          ))
+        {isLoading ? (
+          <Skeleton />
         ) : (
-          <Typography textAlign={"center"}>0 Notification</Typography>
+          <>
+            {data?.allRequest.length > 0 ? (
+              data?.allRequest.map((i) => (
+                <NotificationItem
+                  sender={i.sender}
+                  message={i._id}
+                  handler={frienRequestHandler}
+                  key={i._id}
+                />
+              ))
+            ) : (
+              <Typography textAlign={"center"}>0 Notification</Typography>
+            )}
+          </>
         )}
       </Stack>
     </Dialog>
