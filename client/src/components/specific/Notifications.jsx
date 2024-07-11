@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { sampleNotifications } from "../../constants/sampleData";
 import { useGetNotificationsQuery } from "../../redux/api/api";
+import { useAcceptFriendRequestMutation } from "../../redux/api/api";
 import { useErrors } from "../../hooks/hook";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsNotification } from "../../redux/reducers/misc";
@@ -23,8 +24,14 @@ const NotificationDialog = () => {
 
   useErrors([{ error, isError }]);
 
-  const frienRequestHandler = ({ _id, accept }) => {
-    console.log("friendRequestHandler");
+  const [acceptRequest] = useAcceptFriendRequestMutation();
+  const frienRequestHandler = async ({ _id, accept }) => {
+    try {
+      const res = await acceptRequest({ requestId: _id, accept });
+      if (res.data?.success) {
+      } else {
+      }
+    } catch (error) {}
   };
 
   const closeHandler = () => {
