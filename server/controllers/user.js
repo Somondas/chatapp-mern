@@ -150,7 +150,7 @@ const acceptFriendRequest = TryCatch(async (req, res, next) => {
     );
   }
   if (!accept) {
-    await request.remove();
+    await request.deleteOne();
     return res.status(200).json({
       success: true,
       message: "Friend Request Rejected",

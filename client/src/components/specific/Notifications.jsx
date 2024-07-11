@@ -38,10 +38,11 @@ const NotificationDialog = () => {
         console.log("Use SocketHere");
         toast.success(res.data.message);
       } else {
-        toast.error(res.data?.message || "Something went wrong");
+        // toast.error(res.data?.message || "Something went wrong");
+        console.log("Something went wrong");
       }
     } catch (error) {
-      toast.error("Something went wrong");
+      // toast.error("Something went wrong");
       console.log(error);
     }
   };
