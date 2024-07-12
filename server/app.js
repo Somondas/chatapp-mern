@@ -53,15 +53,17 @@ app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/chat", chatRoutes);
 app.use("/api/v1/admin", adminRoutes);
 app.use(errorMiddleware);
-io.use((socket, next) => {
-  const { cookies } = socket.request;
-  const { secretKey } = cookies;
-  if (secretKey === adminSecretKey) {
-    next();
-  } else {
-    next(new Error("Unauthorized"));
-  }
-});
+// io.use((socket, next) => {
+//   const { cookies } = socket.request;
+//   const { secretKey } = cookies;
+//   console.log(secretKey);
+
+//   if (secretKey === adminSecretKey) {
+//     next();
+//   } else {
+//     next(new Error("Unauthorized"));
+//   }
+// });
 io.on("connection", (socket) => {
   const user = {
     _id: "fastfast",
