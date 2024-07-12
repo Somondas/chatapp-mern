@@ -38,23 +38,17 @@ const sendToken = (res, user, code, message) => {
 const emitEvent = (req, event, users, data) => {
   console.log("Emmiting event", event);
 };
-
 const uploadFilesToCloudinary = async (files = []) => {
   const uploadPromises = files.map((file) => {
     return new Promise((resolve, reject) => {
       cloudinary.uploader.upload(
         getBase64(file),
         {
-          // folder: "chattu",
-          public_id: uuid(),
-          // overwrite: true,
           resource_type: "auto",
+          public_id: uuid(),
         },
         (error, result) => {
-          if (error) {
-            console.log("Error uploading file: ", error);
-            reject(error);
-          }
+          if (error) return reject(error);
           resolve(result);
         }
       );
