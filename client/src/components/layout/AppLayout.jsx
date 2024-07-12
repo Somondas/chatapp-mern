@@ -19,7 +19,7 @@ const AppLayout = () => (WrappedComponent) => {
     const chatId = params.chatId;
     const dispatch = useDispatch();
 
-    const socket = getSockets();
+    // const socket = getSockets();
 
     // console.log(socket);
     const { isMobile } = useSelector((state) => state.misc);

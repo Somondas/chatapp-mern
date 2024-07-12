@@ -16,6 +16,7 @@ import adminRoutes from "./routes/admin.js";
 import chatRoutes from "./routes/chat.js";
 import userRoutes from "./routes/user.js";
 import { corsOptions } from "./constants/config.js";
+import { socketAuthenticator } from "./middlewares/auth.js";
 // **Configuration-------------------------------
 
 const app = express();
@@ -64,6 +65,13 @@ app.use(errorMiddleware);
 //     next(new Error("Unauthorized"));
 //   }
 // });
+io.use((socket, next) => {
+  cookieParser()(
+    socket.request,
+    socket.request.res,
+    async () => await socketAuthenticator(err, socket, next)
+  );
+});
 io.on("connection", (socket) => {
   const user = {
     _id: "fastfast",
