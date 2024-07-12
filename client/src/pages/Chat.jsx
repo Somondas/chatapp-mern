@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import AppLayout from "../components/layout/AppLayout";
 import { IconButton, Stack } from "@mui/material";
 import { grayColor, orange } from "../constants/color";
@@ -10,6 +10,7 @@ import { InputBox } from "../components/styles/StyledComponents";
 import FileMenu from "../components/dialogs/FileMenu";
 import { sampleMessage } from "../constants/sampleData";
 import MessageComponent from "../components/shared/MessageComponent";
+import { getSockets } from "../../../server/lib/helper";
 // |+++++++++++++++++++++++++++++++++++++++++++++++++++++=====
 
 const user = {
@@ -18,7 +19,12 @@ const user = {
 };
 const Chat = () => {
   const containerRef = useRef();
-  const fileMenuRef = useRef();
+  // const fileMenuRef = useRef();
+
+  const socket = getSockets();
+  console.log(socket);
+
+  const [message, setMessage] = useState("");
   return (
     <>
       <Stack
@@ -59,7 +65,11 @@ const Chat = () => {
           >
             <AttachFileIcon />
           </IconButton>
-          <InputBox placeholder="Type a message" />
+          <InputBox
+            placeholder="Type a message"
+            value={message}
+            onChange={setMessage(e.target.value)}
+          />
           <IconButton
             type="submit"
             sx={{

@@ -69,14 +69,12 @@ io.use((socket, next) => {
   cookieParser()(
     socket.request,
     socket.request.res,
-    async () => await socketAuthenticator(err, socket, next)
+    async (err) => await socketAuthenticator(err, socket, next)
   );
 });
 io.on("connection", (socket) => {
-  const user = {
-    _id: "fastfast",
-    name: "fastfast",
-  };
+  const user = socket.user;
+  // console.log(user);
   userSocketIDs.set(user._id.toString(), socket.id);
   console.log(userSocketIDs);
 

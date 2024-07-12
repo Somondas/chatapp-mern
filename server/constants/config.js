@@ -8,4 +8,4 @@ const corsOptions = {
   credentials: true,
 };
 const CHATTU_TOKEN = "chattu-token";
-export { corsOptions };
+export { corsOptions, CHATTU_TOKEN };
