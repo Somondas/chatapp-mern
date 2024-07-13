@@ -10,7 +10,7 @@ import { InputBox } from "../components/styles/StyledComponents";
 import FileMenu from "../components/dialogs/FileMenu";
 import { sampleMessage } from "../constants/sampleData";
 import MessageComponent from "../components/shared/MessageComponent";
-import { getSockets } from "../../../server/lib/helper";
+import { getSocket } from "../socket";
 import { NEW_MESSAGE } from "../constants/events";
 import { useChatDetailsQuery } from "../redux/api/api";
 // |+++++++++++++++++++++++++++++++++++++++++++++++++++++=====
@@ -23,7 +23,7 @@ const Chat = ({ chatId, members }) => {
   const containerRef = useRef();
   // const fileMenuRef = useRef();
 
-  const socket = getSockets();
+  const socket = getSocket();
 
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
   // chatDetails.

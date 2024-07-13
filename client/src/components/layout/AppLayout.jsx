@@ -11,15 +11,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { setIsMobile } from "../../redux/reducers/misc";
 import toast from "react-hot-toast";
 import { useErrors } from "../../hooks/hook";
-import { getSockets } from "../../../../server/lib/helper";
+// import { getSockets } from "../../../../server/lib/helper";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
     const params = useParams();
     const chatId = params.chatId;
     const dispatch = useDispatch();
-
-    const socket = getSockets();
 
     // console.log(socket);
     const { isMobile } = useSelector((state) => state.misc);
