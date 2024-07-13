@@ -11,18 +11,31 @@ import FileMenu from "../components/dialogs/FileMenu";
 import { sampleMessage } from "../constants/sampleData";
 import MessageComponent from "../components/shared/MessageComponent";
 import { getSockets } from "../../../server/lib/helper";
+import { NEW_MESSAGE } from "../constants/events";
 // |+++++++++++++++++++++++++++++++++++++++++++++++++++++=====
 
 const user = {
   _id: "klsfwi49e",
   name: "Kim",
 };
-const Chat = () => {
+const Chat = ({ chatId, members }) => {
   const containerRef = useRef();
   // const fileMenuRef = useRef();
 
   const socket = getSockets();
+
   console.log(socket);
+  const submitHandler = (e) => {
+    e.preventDefault();
+    console.log(message);
+    if (!message.trim()) return;
+    socket.emit(NEW_MESSAGE, chatId, members, message);
+    socket.emit("message", {
+      message,
+      user,
+    });
+    setMessage("");
+  };
 
   const [message, setMessage] = useState("");
   return (
@@ -48,6 +61,7 @@ const Chat = () => {
         style={{
           height: "10%",
         }}
+        onSubmit={submitHandler}
       >
         <Stack
           direction={"row"}
@@ -68,7 +82,7 @@ const Chat = () => {
           <InputBox
             placeholder="Type a message"
             value={message}
-            onChange={setMessage(e.target.value)}
+            onChange={(e) => setMessage(e.target.value)}
           />
           <IconButton
             type="submit"
