@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { Fragment, useRef, useState } from "react";
 import AppLayout from "../components/layout/AppLayout";
 import { IconButton, Stack } from "@mui/material";
 import { grayColor, orange } from "../constants/color";
@@ -12,6 +12,7 @@ import { sampleMessage } from "../constants/sampleData";
 import MessageComponent from "../components/shared/MessageComponent";
 import { getSockets } from "../../../server/lib/helper";
 import { NEW_MESSAGE } from "../constants/events";
+import { useChatDetailsQuery } from "../redux/api/api";
 // |+++++++++++++++++++++++++++++++++++++++++++++++++++++=====
 
 const user = {
@@ -24,22 +25,25 @@ const Chat = ({ chatId, members }) => {
 
   const socket = getSockets();
 
+  const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
+  // chatDetails.
   console.log(socket);
+  const members = chatDetails?.data?.chat?.members;
   const submitHandler = (e) => {
     e.preventDefault();
     console.log(message);
     if (!message.trim()) return;
+    // ? Emit
     socket.emit(NEW_MESSAGE, chatId, members, message);
-    socket.emit("message", {
-      message,
-      user,
-    });
+
     setMessage("");
   };
 
   const [message, setMessage] = useState("");
-  return (
-    <>
+  return chatDetails.isLoading ? (
+    <LayoutLoader />
+  ) : (
+    <Fragment>
       <Stack
         ref={containerRef}
         boxSizing={"border-box"}
@@ -101,7 +105,7 @@ const Chat = ({ chatId, members }) => {
         </Stack>
       </form>
       <FileMenu />
-    </>
+    </Fragment>
   );
 };
 
