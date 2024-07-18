@@ -1,9 +1,15 @@
 import { Menu } from "@mui/material";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsFileMenu } from "../../redux/reducers/misc";
 
 const FileMenu = ({ anchorEl }) => {
+  const { isFileMenu } = useSelector((state) => state.misc);
+
+  const dispatch = useDispatch();
+  const closeFileMenu = () => dispatch(setIsFileMenu(false));
   return (
-    <Menu open={false} anchorEl={anchorEl}>
+    <Menu anchorEl={anchorEl} open={isFileMenu} onClose={closeFileMenu}>
       <div
         style={{
           width: "10rem",
