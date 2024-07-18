@@ -22,26 +22,25 @@ import { useChatDetailsQuery } from "../redux/api/api";
 import { useSocketEvents } from "../hooks/hook";
 // |+++++++++++++++++++++++++++++++++++++++++++++++++++++=====
 
-const user = {
-  _id: "klsfwi49e",
-  name: "Kim",
-};
-const Chat = ({ chatId }) => {
+const Chat = ({ chatId, user }) => {
   const containerRef = useRef();
   // const fileMenuRef = useRef();
   const socket = getSocket();
   const [message, setMessage] = useState("");
+
   const [messages, setMessages] = useState([]);
+
+  const errors = [{ isError: chatDetails.isError, error: chatDetails.error }];
   // console.log(messages);
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
   const members = chatDetails?.data?.chat?.members;
   const submitHandler = (e) => {
     e.preventDefault();
-    // console.log(message);
-    if (!message.trim()) return;
-    // ? Emit
-    socket.emit(NEW_MESSAGE, chatId, members, message);
 
+    if (!message.trim()) return;
+
+    // Emitting the message to the server
+    socket.emit(NEW_MESSAGE, { chatId, members, message });
     setMessage("");
   };
 
@@ -53,6 +52,7 @@ const Chat = ({ chatId }) => {
   const eventHandler = { [NEW_MESSAGE]: newMessagesHandler };
 
   useSocketEvents(socket, eventHandler);
+
   useEffect(() => {
     socket.on(NEW_MESSAGE, newMessagesHandler);
     return () => {
@@ -77,7 +77,7 @@ const Chat = ({ chatId }) => {
         }}
       >
         {/* Message Render */}
-        {sampleMessage.map((i) => (
+        {messages.map((i) => (
           <MessageComponent message={i} key={i._id} user={user} />
         ))}
       </Stack>
