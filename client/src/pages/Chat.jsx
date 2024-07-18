@@ -1,6 +1,6 @@
 import React, { Fragment, useRef, useState } from "react";
 import AppLayout from "../components/layout/AppLayout";
-import { IconButton, Stack } from "@mui/material";
+import { IconButton, Skeleton, Stack } from "@mui/material";
 import { grayColor, orange } from "../constants/color";
 import {
   AttachFile as AttachFileIcon,
@@ -19,7 +19,7 @@ const user = {
   _id: "klsfwi49e",
   name: "Kim",
 };
-const Chat = ({ chatId, members }) => {
+const Chat = ({ chatId }) => {
   const containerRef = useRef();
   // const fileMenuRef = useRef();
 
@@ -27,11 +27,12 @@ const Chat = ({ chatId, members }) => {
 
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
   // chatDetails.
-  console.log(socket);
+  // console.log(socket);
   const members = chatDetails?.data?.chat?.members;
+  console.log(chatDetails);
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log(message);
+    // console.log(message);
     if (!message.trim()) return;
     // ? Emit
     socket.emit(NEW_MESSAGE, chatId, members, message);
@@ -41,7 +42,7 @@ const Chat = ({ chatId, members }) => {
 
   const [message, setMessage] = useState("");
   return chatDetails.isLoading ? (
-    <LayoutLoader />
+    <Skeleton />
   ) : (
     <Fragment>
       <Stack
