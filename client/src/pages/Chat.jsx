@@ -1,4 +1,10 @@
-import React, { Fragment, useRef, useState } from "react";
+import React, {
+  Fragment,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import AppLayout from "../components/layout/AppLayout";
 import { IconButton, Skeleton, Stack } from "@mui/material";
 import { grayColor, orange } from "../constants/color";
@@ -35,7 +41,15 @@ const Chat = ({ chatId }) => {
 
     setMessage("");
   };
-
+  const newMessagesHandler = useCallback((data) => {
+    console.log(data);
+  }, []);
+  useEffect(() => {
+    socket.on(NEW_MESSAGE, newMessagesHandler);
+    return () => {
+      socket.off(NEW_MESSAGE, newMessagesHandler);
+    };
+  }, []);
   const [message, setMessage] = useState("");
   return chatDetails.isLoading ? (
     <Skeleton />

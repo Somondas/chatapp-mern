@@ -11,11 +11,12 @@ const useErrors = (errors = []) => {
     });
   }, [errors]);
 };
-const useAsyncMutation = (mutationHook) => {
+
+const useAsyncMutation = (mutatationHook) => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
 
-  const [mutate] = mutationHook();
+  const [mutate] = mutatationHook();
 
   const executeMutation = async (toastMessage, ...args) => {
     setIsLoading(true);
@@ -23,6 +24,7 @@ const useAsyncMutation = (mutationHook) => {
 
     try {
       const res = await mutate(...args);
+
       if (res.data) {
         toast.success(res.data.message || "Updated data successfully", {
           id: toastId,
@@ -43,4 +45,19 @@ const useAsyncMutation = (mutationHook) => {
 
   return [executeMutation, isLoading, data];
 };
-export { useErrors, useAsyncMutation };
+
+const useSocketEvents = (socket, handlers) => {
+  useEffect(() => {
+    Object.entries(handlers).forEach(([event, handler]) => {
+      socket.on(event, handler);
+    });
+
+    return () => {
+      Object.entries(handlers).forEach(([event, handler]) => {
+        socket.off(event, handler);
+      });
+    };
+  }, [socket, handlers]);
+};
+
+export { useErrors, useAsyncMutation, useSocketEvents };

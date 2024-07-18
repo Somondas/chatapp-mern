@@ -94,7 +94,7 @@ io.on("connection", (socket) => {
       sender: user._id,
       chat: chatId,
     };
-    console.log("Emitting", members);
+    // console.log("Emitting", members);
 
     const memberSocket = getSockets(members);
     io.to(memberSocket).emit(NEW_MESSAGE, {
