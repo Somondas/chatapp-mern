@@ -25,7 +25,6 @@ const AppLayout = () => (WrappedComponent) => {
     const { isLoading, data, isError, error, refetch } = useMyChatsQuery("");
     useErrors([{ isError, error }]);
     // console.log(isMobile);
-    console.log(data);
 
     const handleDeleteChat = (e, _id, groupChat) => {
       e.preventDefault();

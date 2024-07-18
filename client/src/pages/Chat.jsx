@@ -22,14 +22,10 @@ const user = {
 const Chat = ({ chatId }) => {
   const containerRef = useRef();
   // const fileMenuRef = useRef();
-
   const socket = getSocket();
 
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
-  // chatDetails.
-  // console.log(socket);
   const members = chatDetails?.data?.chat?.members;
-  console.log(chatDetails);
   const submitHandler = (e) => {
     e.preventDefault();
     // console.log(message);
