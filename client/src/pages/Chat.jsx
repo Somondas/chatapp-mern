@@ -19,6 +19,7 @@ import MessageComponent from "../components/shared/MessageComponent";
 import { getSocket } from "../socket";
 import { NEW_MESSAGE } from "../constants/events";
 import { useChatDetailsQuery } from "../redux/api/api";
+import { useSocketEvents } from "../hooks/hook";
 // |+++++++++++++++++++++++++++++++++++++++++++++++++++++=====
 
 const user = {
@@ -29,7 +30,9 @@ const Chat = ({ chatId }) => {
   const containerRef = useRef();
   // const fileMenuRef = useRef();
   const socket = getSocket();
-
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+  // console.log(messages);
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
   const members = chatDetails?.data?.chat?.members;
   const submitHandler = (e) => {
@@ -41,16 +44,22 @@ const Chat = ({ chatId }) => {
 
     setMessage("");
   };
+
   const newMessagesHandler = useCallback((data) => {
-    console.log(data);
+    // console.log(data);
+    setMessages((prev) => [...prev, data.message]);
   }, []);
+
+  const eventHandler = { [NEW_MESSAGE]: newMessagesHandler };
+
+  useSocketEvents(socket, eventHandler);
   useEffect(() => {
     socket.on(NEW_MESSAGE, newMessagesHandler);
     return () => {
       socket.off(NEW_MESSAGE, newMessagesHandler);
     };
   }, []);
-  const [message, setMessage] = useState("");
+
   return chatDetails.isLoading ? (
     <Skeleton />
   ) : (
