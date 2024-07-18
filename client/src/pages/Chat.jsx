@@ -36,7 +36,7 @@ const Chat = ({ chatId, user }) => {
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
 
   const oldMessagesChunk = useGetMessagesQuery({ chatId, page: page });
-  const { data, setData } = useInfiniteScrollTop(
+  const { data: oldMessages, setData: setOldMessages } = useInfiniteScrollTop(
     containerRef,
     oldMessagesChunk.data?.totalPages,
     page,
@@ -47,7 +47,7 @@ const Chat = ({ chatId, user }) => {
     { isError: chatDetails.isError, error: chatDetails.error },
     { isError: oldMessagesChunk.isError, error: oldMessagesChunk.error },
   ];
-  console.log("oldMessageChunck", oldMessagesChunk);
+  console.log("oldMessageChunck", oldMessages);
   const members = chatDetails?.data?.chat?.members;
   const submitHandler = (e) => {
     e.preventDefault();
@@ -75,7 +75,7 @@ const Chat = ({ chatId, user }) => {
     };
   }, []);
   useErrors(errors);
-  const allMessages = [...oldMessagesChunk?.data?.messages, ...messages];
+  const allMessages = [...oldMessages, ...messages];
   return chatDetails.isLoading ? (
     <Skeleton />
   ) : (
@@ -97,7 +97,7 @@ const Chat = ({ chatId, user }) => {
           oldMessagesChunk.data?.messages?.map((i) => (
             <MessageComponent message={i} key={i._id} user={user} />
           ))}
-        {messages.map((i) => (
+        {allMessages.map((i) => (
           <MessageComponent message={i} key={i._id} user={user} />
         ))}
       </Stack>
