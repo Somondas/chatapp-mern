@@ -18,8 +18,8 @@ import { sampleMessage } from "../constants/sampleData";
 import MessageComponent from "../components/shared/MessageComponent";
 import { getSocket } from "../socket";
 import { NEW_MESSAGE } from "../constants/events";
-import { useChatDetailsQuery } from "../redux/api/api";
-import { useSocketEvents } from "../hooks/hook";
+import { useChatDetailsQuery, useGetMessagesQuery } from "../redux/api/api";
+import { useErrors, useSocketEvents } from "../hooks/hook";
 // |+++++++++++++++++++++++++++++++++++++++++++++++++++++=====
 
 const Chat = ({ chatId, user }) => {
@@ -29,10 +29,18 @@ const Chat = ({ chatId, user }) => {
   const [message, setMessage] = useState("");
 
   const [messages, setMessages] = useState([]);
+  const [page, setPage] = useState(1);
 
-  const errors = [{ isError: chatDetails.isError, error: chatDetails.error }];
   // console.log(messages);
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
+
+  const oldMessagesChunk = useGetMessagesQuery({ chatId, page: page });
+
+  const errors = [
+    { isError: chatDetails.isError, error: chatDetails.error },
+    { isError: oldMessagesChunk.isError, error: oldMessagesChunk.error },
+  ];
+  console.log("oldMessageChunck", oldMessagesChunk);
   const members = chatDetails?.data?.chat?.members;
   const submitHandler = (e) => {
     e.preventDefault();
@@ -59,7 +67,8 @@ const Chat = ({ chatId, user }) => {
       socket.off(NEW_MESSAGE, newMessagesHandler);
     };
   }, []);
-
+  useErrors(errors);
+  const allMessages = [...oldMessagesChunk?.data?.messages, ...messages];
   return chatDetails.isLoading ? (
     <Skeleton />
   ) : (
@@ -77,6 +86,10 @@ const Chat = ({ chatId, user }) => {
         }}
       >
         {/* Message Render */}
+        {!oldMessagesChunk.isLoading &&
+          oldMessagesChunk.data?.messages?.map((i) => (
+            <MessageComponent message={i} key={i._id} user={user} />
+          ))}
         {messages.map((i) => (
           <MessageComponent message={i} key={i._id} user={user} />
         ))}
