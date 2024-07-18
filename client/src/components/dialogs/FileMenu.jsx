@@ -1,7 +1,8 @@
-import { Menu } from "@mui/material";
+import { Menu, MenuList, Tooltip } from "@mui/material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsFileMenu } from "../../redux/reducers/misc";
+import { Image as ImageIcon } from "@mui/icons-material";
 
 const FileMenu = ({ anchorEl }) => {
   const { isFileMenu } = useSelector((state) => state.misc);
@@ -10,16 +11,13 @@ const FileMenu = ({ anchorEl }) => {
   const closeFileMenu = () => dispatch(setIsFileMenu(false));
   return (
     <Menu anchorEl={anchorEl} open={isFileMenu} onClose={closeFileMenu}>
-      <div
-        style={{
-          width: "10rem",
-        }}
-      >
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati vel
-        maiores deserunt earum eum quasi asperiores nemo cumque inventore,
-        voluptatibus corporis quo, praesentium odio qui laboriosam odit repellat
-        beatae ducimus.
-      </div>
+      <MenuList>
+        <MenuItem>
+          <Tooltip title="Image">
+            <ImageIcon />
+          </Tooltip>
+        </MenuItem>
+      </MenuList>
     </Menu>
   );
 };
