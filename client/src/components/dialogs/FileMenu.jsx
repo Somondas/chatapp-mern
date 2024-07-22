@@ -14,6 +14,12 @@ const FileMenu = ({ anchorEl }) => {
 
   const dispatch = useDispatch();
   const closeFileMenu = () => dispatch(setIsFileMenu(false));
+
+  const fileChangeHandler = (e, type) => {
+    const files = e.target.files;
+    console.log(files);
+    console.log(type);
+  };
   return (
     <Menu anchorEl={anchorEl} open={isFileMenu} onClose={closeFileMenu}>
       <div
@@ -38,9 +44,9 @@ const FileMenu = ({ anchorEl }) => {
               onChange={(e) => fileChangeHandler(e, "Videos")}
             />
           </MenuItem>
-        </MenuList>
-        {/* Second ======================= */}
-        <MenuList>
+
+          {/* Second ======================= */}
+
           <MenuItem>
             <Tooltip title="Audio">
               <AudioFileIcon />
@@ -56,9 +62,9 @@ const FileMenu = ({ anchorEl }) => {
               onChange={(e) => fileChangeHandler(e, "Images")}
             />
           </MenuItem>
-        </MenuList>
-        {/* Third ======================= */}
-        <MenuList>
+
+          {/* Third ======================= */}
+
           <MenuItem>
             <Tooltip title="Video">
               <VideoFileIcon />
@@ -74,9 +80,9 @@ const FileMenu = ({ anchorEl }) => {
               onChange={(e) => fileChangeHandler(e, "Videos")}
             />
           </MenuItem>
-        </MenuList>
-        {/* Fourth ======================= */}
-        <MenuList>
+
+          {/* Fourth ======================= */}
+
           <MenuItem>
             <Tooltip title="File">
               <UploadFileIcon />

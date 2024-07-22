@@ -51,7 +51,7 @@ const Chat = ({ chatId, user }) => {
     { isError: chatDetails.isError, error: chatDetails.error },
     { isError: oldMessagesChunk.isError, error: oldMessagesChunk.error },
   ];
-  console.log("oldMessageChunck", oldMessages);
+  // console.log("oldMessageChunck", oldMessages);
   const members = chatDetails?.data?.chat?.members;
 
   const handleFileMenuOpen = (e) => {
