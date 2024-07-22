@@ -1,5 +1,5 @@
 import { ListItemText, Menu, MenuItem, MenuList, Tooltip } from "@mui/material";
-import React from "react";
+import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsFileMenu } from "../../redux/reducers/misc";
 import {
@@ -15,6 +15,20 @@ const FileMenu = ({ anchorEl }) => {
   const dispatch = useDispatch();
   const closeFileMenu = () => dispatch(setIsFileMenu(false));
 
+  const imageRef = useRef(null);
+  const videoRef = useRef(null);
+  const audioRef = useRef(null);
+  const fileRef = useRef(null);
+
+  // const selectRef = (ref) => {
+  //   ref.current.click();
+  // };
+
+  const selectImage = () => imageRef.current?.click();
+  const selectAudio = () => audioRef.current?.click();
+  const selectVideo = () => videoRef.current?.click();
+  const selectFile = () => fileRef.current?.click();
+
   const fileChangeHandler = (e, type) => {
     const files = e.target.files;
     console.log(files);
@@ -29,12 +43,13 @@ const FileMenu = ({ anchorEl }) => {
       >
         {/* First ======================= */}
         <MenuList>
-          <MenuItem>
+          <MenuItem onClick={selectImage}>
             <Tooltip title="Image">
               <ImageIcon />
             </Tooltip>
             <ListItemText style={{ marginLeft: ".5rem" }}>Image</ListItemText>
             <input
+              ref={imageRef}
               type="file"
               multiple
               accept="video/mp4, video/webm, video/ogg"
@@ -47,7 +62,7 @@ const FileMenu = ({ anchorEl }) => {
 
           {/* Second ======================= */}
 
-          <MenuItem>
+          <MenuItem onClick={selectAudio}>
             <Tooltip title="Audio">
               <AudioFileIcon />
             </Tooltip>
@@ -59,19 +74,21 @@ const FileMenu = ({ anchorEl }) => {
               style={{
                 display: "none",
               }}
+              ref={audioRef}
               onChange={(e) => fileChangeHandler(e, "Images")}
             />
           </MenuItem>
 
           {/* Third ======================= */}
 
-          <MenuItem>
+          <MenuItem onClick={selectVideo}>
             <Tooltip title="Video">
               <VideoFileIcon />
             </Tooltip>
             <ListItemText style={{ marginLeft: ".5rem" }}>Video</ListItemText>
             <input
               type="file"
+              ref={videoRef}
               multiple
               accept="image/png, image/jpeg, image/gif"
               style={{
@@ -83,7 +100,7 @@ const FileMenu = ({ anchorEl }) => {
 
           {/* Fourth ======================= */}
 
-          <MenuItem>
+          <MenuItem onClick={selectFile}>
             <Tooltip title="File">
               <UploadFileIcon />
             </Tooltip>
@@ -92,6 +109,7 @@ const FileMenu = ({ anchorEl }) => {
               type="file"
               multiple
               accept="*"
+              ref={fileRef}
               style={{
                 display: "none",
               }}
