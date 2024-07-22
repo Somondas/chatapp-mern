@@ -1,13 +1,14 @@
 import { ListItemText, Menu, MenuItem, MenuList, Tooltip } from "@mui/material";
 import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setIsFileMenu } from "../../redux/reducers/misc";
+import { setIsFileMenu, setUploadingLoader } from "../../redux/reducers/misc";
 import {
   AudioFile as AudioFileIcon,
   Image as ImageIcon,
   UploadFile as UploadFileIcon,
   VideoFile as VideoFileIcon,
 } from "@mui/icons-material";
+import toast from "react-hot-toast";
 
 const FileMenu = ({ anchorEl }) => {
   const { isFileMenu } = useSelector((state) => state.misc);
@@ -29,11 +30,38 @@ const FileMenu = ({ anchorEl }) => {
   const selectVideo = () => videoRef.current?.click();
   const selectFile = () => fileRef.current?.click();
 
-  const fileChangeHandler = (e, type) => {
-    const files = e.target.files;
-    console.log(files);
-    console.log(type);
+  const fileChangeHandler = async (e, key) => {
+    const files = Array.from(e.target.files);
+
+    if (files.length <= 0) return;
+
+    if (files.length > 5)
+      return toast.error(`You can only send 5 ${key} at a time`);
+
+    dispatch(setUploadingLoader(true));
+
+    const toastId = toast.loading(`Sending ${key}...`);
+    closeFileMenu();
+
+    try {
+      const myForm = new FormData();
+
+      myForm.append("chatId", chatId);
+      files.forEach((file) => myForm.append("files", file));
+
+      const res = await sendAttachments(myForm);
+
+      if (res.data) toast.success(`${key} sent successfully`, { id: toastId });
+      else toast.error(`Failed to send ${key}`, { id: toastId });
+
+      // Fetching Here
+    } catch (error) {
+      toast.error(error, { id: toastId });
+    } finally {
+      dispatch(setUploadingLoader(false));
+    }
   };
+
   return (
     <Menu anchorEl={anchorEl} open={isFileMenu} onClose={closeFileMenu}>
       <div
