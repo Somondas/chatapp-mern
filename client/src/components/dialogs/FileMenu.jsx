@@ -9,8 +9,9 @@ import {
   VideoFile as VideoFileIcon,
 } from "@mui/icons-material";
 import toast from "react-hot-toast";
+import { useSendAttachmentsMutation } from "../../redux/api/api";
 
-const FileMenu = ({ anchorEl }) => {
+const FileMenu = ({ anchorEl, chatId }) => {
   const { isFileMenu } = useSelector((state) => state.misc);
 
   const dispatch = useDispatch();
@@ -24,6 +25,8 @@ const FileMenu = ({ anchorEl }) => {
   // const selectRef = (ref) => {
   //   ref.current.click();
   // };
+
+  const [sendAttachments] = useSendAttachmentsMutation();
 
   const selectImage = () => imageRef.current?.click();
   const selectAudio = () => audioRef.current?.click();

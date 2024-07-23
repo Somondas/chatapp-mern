@@ -3,7 +3,11 @@ import { ErrorHandler } from "../utils/utility.js";
 import { Chat } from "../models/chat.js";
 import { User } from "../models/user.js";
 import { Message } from "../models/message.js";
-import { deleteFilesFromCloudinary, emitEvent } from "../utils/features.js";
+import {
+  deleteFilesFromCloudinary,
+  emitEvent,
+  uploadFilesToCloudinary,
+} from "../utils/features.js";
 import {
   ALERT,
   NEW_ATTACHMENT,
@@ -254,7 +258,7 @@ const sendAttachment = TryCatch(async (req, res, next) => {
     return next(new ErrorHandler("Please provide files", 400));
 
   // ?? Upload files here
-  const attachments = [];
+  const attachments = await uploadFilesToCloudinary(files);
   const messageForDB = {
     content: "",
     attachments,
