@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 import { useErrors, useSocketEvents } from "../../hooks/hook";
 import { NEW_MESSAGE_ALERT, NEW_REQUEST } from "../../constants/events";
 import { incrementNotification } from "../../redux/reducers/chat";
+import { getSocket } from "../../socket";
 // import { getSockets } from "../../../../server/lib/helper";
 
 const AppLayout = () => (WrappedComponent) => {
@@ -20,6 +21,7 @@ const AppLayout = () => (WrappedComponent) => {
     const params = useParams();
     const chatId = params.chatId;
     const dispatch = useDispatch();
+    const socket = getSocket();
 
     // console.log(socket);
     const { isMobile } = useSelector((state) => state.misc);
