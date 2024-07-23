@@ -39,6 +39,8 @@ const Header = () => {
   const [isNewGroup, setIsNewGroup] = useState(false);
 
   const { isSearch, isNotification } = useSelector((state) => state.misc);
+
+  const { notificationCount } = useSelector((state) => state.chat);
   // >> Handling Functions------------------------------
   const handleMobile = () => {
     dispatch(setIsMobile(true));
