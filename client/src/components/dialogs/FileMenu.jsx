@@ -83,11 +83,11 @@ const FileMenu = ({ anchorEl, chatId }) => {
               ref={imageRef}
               type="file"
               multiple
-              accept="video/mp4, video/webm, video/ogg"
+              accept="image/png, image/jpeg, image/gif"
               style={{
                 display: "none",
               }}
-              onChange={(e) => fileChangeHandler(e, "Videos")}
+              onChange={(e) => fileChangeHandler(e, "Images")}
             />
           </MenuItem>
 
@@ -101,12 +101,12 @@ const FileMenu = ({ anchorEl, chatId }) => {
             <input
               type="file"
               multiple
-              accept="image/png, image/jpeg, image/gif"
+              accept="audio/mp3, audio/wav, audio/mpeg"
               style={{
                 display: "none",
               }}
               ref={audioRef}
-              onChange={(e) => fileChangeHandler(e, "Images")}
+              onChange={(e) => fileChangeHandler(e, "Audios")}
             />
           </MenuItem>
 
@@ -121,7 +121,7 @@ const FileMenu = ({ anchorEl, chatId }) => {
               type="file"
               ref={videoRef}
               multiple
-              accept="image/png, image/jpeg, image/gif"
+              accept="video/mp4, video/webm, video/ogg"
               style={{
                 display: "none",
               }}
