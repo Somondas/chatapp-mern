@@ -118,17 +118,18 @@ const sendFriendRequest = TryCatch(async (req, res, next) => {
     ],
   });
 
-  if (request) {
-    return next(new ErrorHandler("Friend Request Already Send", 404));
-  }
+  if (request) return next(new ErrorHandler("Request already sent", 400));
+
   await Request.create({
     sender: req.user,
     receiver: userId,
   });
+
   emitEvent(req, NEW_REQUEST, [userId]);
+
   return res.status(200).json({
     success: true,
-    message: "Friend Request Sent Successfully",
+    message: "Friend Request Sent",
   });
 });
 
@@ -140,22 +141,22 @@ const acceptFriendRequest = TryCatch(async (req, res, next) => {
     .populate("sender", "name")
     .populate("receiver", "name");
 
-  if (!request) {
-    return next(new ErrorHandler("Friend Request not found", 404));
-  }
+  if (!request) return next(new ErrorHandler("Request not found", 404));
 
-  if (request.receiver._id.toString() !== req.user.toString()) {
+  if (request.receiver._id.toString() !== req.user.toString())
     return next(
-      new ErrorHandler("You are not authorized to accept this request", 400)
+      new ErrorHandler("You are not authorized to accept this request", 401)
     );
-  }
+
   if (!accept) {
     await request.deleteOne();
+
     return res.status(200).json({
       success: true,
       message: "Friend Request Rejected",
     });
   }
+
   const members = [request.sender._id, request.receiver._id];
 
   await Promise.all([
@@ -165,8 +166,9 @@ const acceptFriendRequest = TryCatch(async (req, res, next) => {
     }),
     request.deleteOne(),
   ]);
+
   emitEvent(req, REFETCH_CHATS, members);
-  // emitEvent(req, NEW_REQUEST, [userId]);
+
   return res.status(200).json({
     success: true,
     message: "Friend Request Accepted",
