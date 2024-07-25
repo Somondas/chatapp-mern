@@ -17,7 +17,7 @@ import FileMenu from "../components/dialogs/FileMenu";
 import { sampleMessage } from "../constants/sampleData";
 import MessageComponent from "../components/shared/MessageComponent";
 import { getSocket } from "../socket";
-import { NEW_MESSAGE } from "../constants/events";
+import { NEW_MESSAGE, START_TYPING } from "../constants/events";
 import { useChatDetailsQuery, useGetMessagesQuery } from "../redux/api/api";
 import { useErrors, useSocketEvents } from "../hooks/hook";
 import { useInfiniteScrollTop } from "6pp";
@@ -36,6 +36,10 @@ const Chat = ({ chatId, user }) => {
   const [messages, setMessages] = useState([]);
   const [page, setPage] = useState(1);
   const [fileMenuAnchor, setFileMenuAnchor] = useState(null);
+
+  const [IamTyping, setIamTyping] = useState(false);
+  const [userTyping, setUserTyping] = useState(false);
+  const typingTimeout = useRef(null);
 
   // console.log(messages);
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
@@ -95,7 +99,7 @@ const Chat = ({ chatId, user }) => {
       setOldMessages([]);
     };
   }, [chatId]);
-  const newMessagesHandler = useCallback(
+  const newMessagesListener = useCallback(
     (data) => {
       if (data.chatId !== chatId) return;
       // console.log(data);
@@ -104,14 +108,36 @@ const Chat = ({ chatId, user }) => {
     [chatId]
   );
 
-  const eventHandler = { [NEW_MESSAGE]: newMessagesHandler };
+  const startTypingListener = useCallback(
+    (data) => {
+      if (data.chatId !== chatId) return;
+      // console.log(data);
+      console.log("typing", data);
+    },
+    [chatId]
+  );
+
+  const stopTypingListener = useCallback(
+    (data) => {
+      if (data.chatId !== chatId) return;
+      // console.log(data);
+      console.log("typing", data);
+    },
+    [chatId]
+  );
+
+  const eventHandler = {
+    [NEW_MESSAGE]: newMessagesListener,
+    [START_TYPING]: startTypingListener,
+    [STOP_TYPING]: stopTypingListener,
+  };
 
   useSocketEvents(socket, eventHandler);
 
   useEffect(() => {
-    socket.on(NEW_MESSAGE, newMessagesHandler);
+    socket.on(NEW_MESSAGE, newMessagesListener);
     return () => {
-      socket.off(NEW_MESSAGE, newMessagesHandler);
+      socket.off(NEW_MESSAGE, newMessagesListener);
     };
   }, []);
   useErrors(errors);

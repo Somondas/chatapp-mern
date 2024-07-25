@@ -11,6 +11,7 @@ import {
   NEW_MESSAGE,
   NEW_MESSAGE_ALERT,
   START_TYPING,
+  STOP_TYPING,
 } from "./constants/events.js";
 import { Message } from "./models/message.js";
 import cors from "cors";
@@ -115,7 +116,29 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on(START_TYPING, () => {});
+  socket.on(START_TYPING, ({ members, chatId }) => {
+    console.log("Typing", members, chatId);
+
+    const memberSockets = getSockets(members);
+
+    socket.to(memberSockets).emit(START_TYPING, {
+      chatId,
+    });
+
+    // socket.to();
+  });
+
+  socket.on(STOP_TYPING, ({ members, chatId }) => {
+    console.log("Typing", members, chatId);
+
+    const memberSockets = getSockets(members);
+
+    socket.to(memberSockets).emit(STOP_TYPING, {
+      chatId,
+    });
+
+    // socket.to();
+  });
 
   socket.on("disconnect", () => {
     console.log("A User Disconnected");
