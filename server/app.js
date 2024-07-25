@@ -7,7 +7,11 @@ import { errorMiddleware } from "./middlewares/error.js";
 import { connectDB } from "./utils/features.js";
 import { v4 as uuid } from "uuid";
 import { getSockets } from "./lib/helper.js";
-import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events.js";
+import {
+  NEW_MESSAGE,
+  NEW_MESSAGE_ALERT,
+  START_TYPING,
+} from "./constants/events.js";
 import { Message } from "./models/message.js";
 import cors from "cors";
 import { v2 as cloudinary } from "cloudinary";
@@ -110,6 +114,8 @@ io.on("connection", (socket) => {
       console.log(error);
     }
   });
+
+  socket.on(START_TYPING, () => {});
 
   socket.on("disconnect", () => {
     console.log("A User Disconnected");
