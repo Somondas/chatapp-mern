@@ -26,6 +26,10 @@ const AppLayout = () => (WrappedComponent) => {
     // console.log(socket);
     const { isMobile } = useSelector((state) => state.misc);
     const { user } = useSelector((state) => state.auth);
+    const { newMessageAlert } = useSelector((state) => state.chat);
+
+    console.log("newMsgAlert", newMessageAlert);
+
     const { isLoading, data, isError, error, refetch } = useMyChatsQuery("");
     useErrors([{ isError, error }]);
     // console.log(isMobile);
@@ -67,6 +71,7 @@ const AppLayout = () => (WrappedComponent) => {
               chats={data?.chats}
               chatId={chatId}
               handleDeleteChat={handleDeleteChat}
+              newMessagesAlert={newMessageAlert}
             />
           </Drawer>
         )}
@@ -87,6 +92,7 @@ const AppLayout = () => (WrappedComponent) => {
                 chats={data?.chats}
                 chatId={chatId}
                 handleDeleteChat={handleDeleteChat}
+                newMessagesAlert={newMessageAlert}
               />
             )}
           </Grid>
