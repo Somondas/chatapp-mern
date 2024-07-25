@@ -39,7 +39,10 @@ const AppLayout = () => (WrappedComponent) => {
       dispatch(setIsMobile(false));
     };
 
-    const newMessageAlertHandler = useCallback(() => {}, []);
+    const newMessageAlertHandler = useCallback((data) => {
+      const sds = data.chatId;
+      console.log(sds);
+    }, []);
 
     const newRequestHandler = useCallback(() => {
       dispatch(incrementNotification());

@@ -77,11 +77,14 @@ const Chat = ({ chatId, user }) => {
       setOldMessages([]);
     };
   }, [chatId]);
-  const newMessagesHandler = useCallback((data) => {
-    if (data.chatId !== chatId) return;
-    // console.log(data);
-    setMessages((prev) => [...prev, data.message]);
-  }, []);
+  const newMessagesHandler = useCallback(
+    (data) => {
+      if (data.chatId !== chatId) return;
+      // console.log(data);
+      setMessages((prev) => [...prev, data.message]);
+    },
+    [chatId]
+  );
 
   const eventHandler = { [NEW_MESSAGE]: newMessagesHandler };
 
