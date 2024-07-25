@@ -1,3 +1,9 @@
+import { useInfiniteScrollTop } from "6pp";
+import {
+  AttachFile as AttachFileIcon,
+  Send as SendIcon,
+} from "@mui/icons-material";
+import { IconButton, Skeleton, Stack } from "@mui/material";
 import React, {
   Fragment,
   useCallback,
@@ -5,25 +11,20 @@ import React, {
   useRef,
   useState,
 } from "react";
-import AppLayout from "../components/layout/AppLayout";
-import { IconButton, Skeleton, Stack } from "@mui/material";
-import { grayColor, orange } from "../constants/color";
-import {
-  AttachFile as AttachFileIcon,
-  Send as SendIcon,
-} from "@mui/icons-material";
-import { InputBox } from "../components/styles/StyledComponents";
-import FileMenu from "../components/dialogs/FileMenu";
-import { sampleMessage } from "../constants/sampleData";
-import MessageComponent from "../components/shared/MessageComponent";
-import { getSocket } from "../socket";
-import { NEW_MESSAGE, START_TYPING, STOP_TYPING } from "../constants/events";
-import { useChatDetailsQuery, useGetMessagesQuery } from "../redux/api/api";
-import { useErrors, useSocketEvents } from "../hooks/hook";
-import { useInfiniteScrollTop } from "6pp";
 import { useDispatch } from "react-redux";
-import { setIsFileMenu } from "../redux/reducers/misc";
+import FileMenu from "../components/dialogs/FileMenu";
+import AppLayout from "../components/layout/AppLayout";
+import MessageComponent from "../components/shared/MessageComponent";
+import { InputBox } from "../components/styles/StyledComponents";
+
+import { grayColor, orange } from "../constants/color";
+import { NEW_MESSAGE, START_TYPING, STOP_TYPING } from "../constants/events";
+import { useErrors, useSocketEvents } from "../hooks/hook";
+import { useChatDetailsQuery, useGetMessagesQuery } from "../redux/api/api";
 import { removeNewMessagesAlert } from "../redux/reducers/chat";
+import { TypingLoader } from "../components/layout/Loaders";
+import { setIsFileMenu } from "../redux/reducers/misc";
+import { getSocket } from "../socket";
 // |+++++++++++++++++++++++++++++++++++++++++++++++++++++=====
 
 const Chat = ({ chatId, user }) => {
@@ -40,7 +41,7 @@ const Chat = ({ chatId, user }) => {
   const [IamTyping, setIamTyping] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
   const typingTimeout = useRef(null);
-
+  const bottomRef = useRef(null);
   // console.log(messages);
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
 
@@ -99,6 +100,13 @@ const Chat = ({ chatId, user }) => {
       setOldMessages([]);
     };
   }, [chatId]);
+
+  useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
   const newMessagesListener = useCallback(
     (data) => {
       if (data.chatId !== chatId) return;
@@ -167,6 +175,10 @@ const Chat = ({ chatId, user }) => {
         {allMessages.map((i) => (
           <MessageComponent message={i} key={i._id} user={user} />
         ))}
+
+        {userTyping && <TypingLoader />}
+
+        <div ref={bottomRef} />
       </Stack>
       <form
         style={{
