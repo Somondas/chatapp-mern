@@ -55,6 +55,22 @@ const Chat = ({ chatId, user }) => {
   // console.log("oldMessageChunck", oldMessages);
   const members = chatDetails?.data?.chat?.members;
 
+  const messageOnChange = (e) => {
+    setMessage(e.target.value);
+
+    if (!IamTyping) {
+      socket.emit(START_TYPING, { members, chatId });
+      setIamTyping(true);
+    }
+
+    if (typingTimeout.current) clearTimeout(typingTimeout.current);
+
+    typingTimeout.current = setTimeout(() => {
+      socket.emit(STOP_TYPING, { members, chatId });
+      setIamTyping(false);
+    }, [2000]);
+  };
+
   const handleFileMenuOpen = (e) => {
     dispatch(setIsFileMenu(true));
     setFileMenuAnchor(e.currentTarget);
@@ -151,7 +167,7 @@ const Chat = ({ chatId, user }) => {
           <InputBox
             placeholder="Type a message"
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={messageOnChange}
           />
           <IconButton
             type="submit"
