@@ -1,9 +1,3 @@
-import { useInfiniteScrollTop } from "6pp";
-import {
-  AttachFile as AttachFileIcon,
-  Send as SendIcon,
-} from "@mui/icons-material";
-import { IconButton, Skeleton, Stack } from "@mui/material";
 import React, {
   Fragment,
   useCallback,
@@ -11,34 +5,43 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useDispatch } from "react-redux";
-import FileMenu from "../components/dialogs/FileMenu";
 import AppLayout from "../components/layout/AppLayout";
-import MessageComponent from "../components/shared/MessageComponent";
-import { InputBox } from "../components/styles/StyledComponents";
-
+import { IconButton, Skeleton, Stack } from "@mui/material";
 import { grayColor, orange } from "../constants/color";
 import {
+  AttachFile as AttachFileIcon,
+  Send as SendIcon,
+} from "@mui/icons-material";
+import { InputBox } from "../components/styles/StyledComponents";
+import FileMenu from "../components/dialogs/FileMenu";
+import MessageComponent from "../components/shared/MessageComponent";
+import { getSocket } from "../socket";
+import {
   ALERT,
+  CHAT_JOINED,
+  CHAT_LEAVED,
   NEW_MESSAGE,
   START_TYPING,
   STOP_TYPING,
 } from "../constants/events";
-import { useErrors, useSocketEvents } from "../hooks/hook";
 import { useChatDetailsQuery, useGetMessagesQuery } from "../redux/api/api";
+import { useErrors, useSocketEvents } from "../hooks/hook";
+import { useInfiniteScrollTop } from "6pp";
+import { useDispatch } from "react-redux";
+import { setIsFileMenu } from "../redux/reducers/misc";
 import { removeNewMessagesAlert } from "../redux/reducers/chat";
 import { TypingLoader } from "../components/layout/Loaders";
-import { setIsFileMenu } from "../redux/reducers/misc";
-import { getSocket } from "../socket";
-// |+++++++++++++++++++++++++++++++++++++++++++++++++++++=====
+import { useNavigate } from "react-router-dom";
 
 const Chat = ({ chatId, user }) => {
-  const containerRef = useRef();
-  // const fileMenuRef = useRef();
   const socket = getSocket();
-  const [message, setMessage] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
+  const containerRef = useRef(null);
+  const bottomRef = useRef(null);
+
+  const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [page, setPage] = useState(1);
   const [fileMenuAnchor, setFileMenuAnchor] = useState(null);
@@ -46,11 +49,11 @@ const Chat = ({ chatId, user }) => {
   const [IamTyping, setIamTyping] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
   const typingTimeout = useRef(null);
-  const bottomRef = useRef(null);
-  // console.log(messages);
+
   const chatDetails = useChatDetailsQuery({ chatId, skip: !chatId });
 
-  const oldMessagesChunk = useGetMessagesQuery({ chatId, page: page });
+  const oldMessagesChunk = useGetMessagesQuery({ chatId, page });
+
   const { data: oldMessages, setData: setOldMessages } = useInfiniteScrollTop(
     containerRef,
     oldMessagesChunk.data?.totalPages,
@@ -58,11 +61,12 @@ const Chat = ({ chatId, user }) => {
     setPage,
     oldMessagesChunk.data?.messages
   );
+
   const errors = [
     { isError: chatDetails.isError, error: chatDetails.error },
     { isError: oldMessagesChunk.isError, error: oldMessagesChunk.error },
   ];
-  // console.log("oldMessageChunck", oldMessages);
+
   const members = chatDetails?.data?.chat?.members;
 
   const messageOnChange = (e) => {
@@ -81,7 +85,7 @@ const Chat = ({ chatId, user }) => {
     }, [2000]);
   };
 
-  const handleFileMenuOpen = (e) => {
+  const handleFileOpen = (e) => {
     dispatch(setIsFileMenu(true));
     setFileMenuAnchor(e.currentTarget);
   };
@@ -97,25 +101,31 @@ const Chat = ({ chatId, user }) => {
   };
 
   useEffect(() => {
+    socket.emit(CHAT_JOINED, { userId: user._id, members });
     dispatch(removeNewMessagesAlert(chatId));
+
     return () => {
       setMessages([]);
       setMessage("");
-      setPage(1);
       setOldMessages([]);
+      setPage(1);
+      socket.emit(CHAT_LEAVED, { userId: user._id, members });
     };
   }, [chatId]);
 
   useEffect(() => {
-    if (bottomRef.current) {
+    if (bottomRef.current)
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
-    }
   }, [messages]);
+
+  useEffect(() => {
+    if (chatDetails.isError) return navigate("/");
+  }, [chatDetails.isError]);
 
   const newMessagesListener = useCallback(
     (data) => {
       if (data.chatId !== chatId) return;
-      // console.log(data);
+
       setMessages((prev) => [...prev, data.message]);
     },
     [chatId]
@@ -124,8 +134,7 @@ const Chat = ({ chatId, user }) => {
   const startTypingListener = useCallback(
     (data) => {
       if (data.chatId !== chatId) return;
-      // console.log(data);
-      console.log("typing", data);
+
       setUserTyping(true);
     },
     [chatId]
@@ -134,8 +143,7 @@ const Chat = ({ chatId, user }) => {
   const stopTypingListener = useCallback(
     (data) => {
       if (data.chatId !== chatId) return;
-      // console.log(data);
-      console.log("typing", data);
+      setUserTyping(false);
     },
     [chatId]
   );
@@ -167,14 +175,10 @@ const Chat = ({ chatId, user }) => {
 
   useSocketEvents(socket, eventHandler);
 
-  useEffect(() => {
-    socket.on(NEW_MESSAGE, newMessagesListener);
-    return () => {
-      socket.off(NEW_MESSAGE, newMessagesListener);
-    };
-  }, []);
   useErrors(errors);
+
   const allMessages = [...oldMessages, ...messages];
+
   return chatDetails.isLoading ? (
     <Skeleton />
   ) : (
@@ -191,19 +195,15 @@ const Chat = ({ chatId, user }) => {
           overflowY: "auto",
         }}
       >
-        {/* Message Render */}
-        {!oldMessagesChunk.isLoading &&
-          oldMessagesChunk.data?.messages?.map((i) => (
-            <MessageComponent message={i} key={i._id} user={user} />
-          ))}
         {allMessages.map((i) => (
-          <MessageComponent message={i} key={i._id} user={user} />
+          <MessageComponent key={i._id} message={i} user={user} />
         ))}
 
         {userTyping && <TypingLoader />}
 
         <div ref={bottomRef} />
       </Stack>
+
       <form
         style={{
           height: "10%",
@@ -223,24 +223,27 @@ const Chat = ({ chatId, user }) => {
               left: "1.5rem",
               rotate: "30deg",
             }}
-            onClick={handleFileMenuOpen}
+            onClick={handleFileOpen}
           >
             <AttachFileIcon />
           </IconButton>
+
           <InputBox
-            placeholder="Type a message"
+            placeholder="Type Message Here..."
             value={message}
             onChange={messageOnChange}
           />
+
           <IconButton
             type="submit"
             sx={{
-              backgroundColor: orange,
+              rotate: "-30deg",
+              bgcolor: orange,
               color: "white",
               marginLeft: "1rem",
-              padding: ".5rem",
+              padding: "0.5rem",
               "&:hover": {
-                backgroundColor: "error.dark",
+                bgcolor: "error.dark",
               },
             }}
           >
@@ -248,7 +251,8 @@ const Chat = ({ chatId, user }) => {
           </IconButton>
         </Stack>
       </form>
-      <FileMenu anchorEl={fileMenuAnchor} chatId={chatId} />
+
+      <FileMenu anchorE1={fileMenuAnchor} chatId={chatId} />
     </Fragment>
   );
 };
