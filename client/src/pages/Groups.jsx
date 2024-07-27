@@ -26,6 +26,9 @@ import { samepleChats } from "../constants/sampleData/";
 import { sampleUsers } from "../constants/sampleData.js";
 import UserItem from "../components/shared/UserItem.jsx";
 import { bgGradient, bgGradientBluePink } from "../constants/color.js";
+import { useMyGroupsQuery } from "../redux/api/api.js";
+import { useErrors } from "../hooks/hook.jsx";
+import { LayoutLoader } from "../components/layout/Loaders.jsx";
 
 // -> Lazy Imports
 const ConfirmDelteDialog = lazy(() =>
@@ -39,6 +42,9 @@ const AddMemberDialog = lazy(() =>
 const Groups = () => {
   const chatId = useSearchParams()[0].get("group");
   const navigate = useNavigate();
+
+  const myGroups = useMyGroupsQuery("");
+
   const isMember = false;
   // -> State variables------------
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -47,6 +53,16 @@ const Groups = () => {
   const [groupNameUpdatedValue, setGroupNameUpdatedValue] = useState("");
   const [confirmDeleteDialog, setConfirmDeleteDialog] = useState(false);
   // console.log(chatId);
+
+  console.log(myGroups.data);
+  const error = [
+    {
+      isError: myGroups.isError,
+      error: myGroups.error,
+    },
+  ];
+  useErrors();
+
   // -> Handlers------
 
   const navigateBack = () => {
@@ -189,7 +205,9 @@ const Groups = () => {
     </Stack>
   );
 
-  return (
+  return myGroups.isLoading ? (
+    <LayoutLoader />
+  ) : (
     <>
       <Grid container height={"100vh"}>
         <Grid
