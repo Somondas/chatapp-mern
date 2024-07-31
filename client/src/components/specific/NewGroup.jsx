@@ -3,6 +3,7 @@ import {
   Button,
   Dialog,
   DialogTitle,
+  Skeleton,
   Stack,
   TextField,
   Typography,
@@ -11,7 +12,7 @@ import React, { useState } from "react";
 import { sampleUsers } from "../../constants/sampleData";
 import UserItem from "../shared/UserItem";
 import { useDispatch } from "react-redux";
-import { useErrors } from "../../hooks/useErrors";
+import { useErrors } from "../../hooks/hook";
 import { useAvailableFriendsQuery } from "../../redux/api/api";
 // ! Use Alt + Shift + O shortcut to remove unneccesary imports
 const NewGroupDialog = () => {
@@ -24,6 +25,7 @@ const NewGroupDialog = () => {
   const [members, setMembers] = useState(sampleUsers);
   const [selectedMembers, setSelectedMembers] = useState([]);
 
+  console.log(data);
   const errors = [
     {
       isError,
@@ -67,14 +69,18 @@ const NewGroupDialog = () => {
         </Typography>
 
         <Stack pt={"1rem"}>
-          {members.map((user) => (
-            <UserItem
-              key={user._id}
-              user={user}
-              handler={selectMemberHandler}
-              isAdded={selectedMembers.includes(user._id)}
-            />
-          ))}
+          {isLoading ? (
+            <Skeleton />
+          ) : (
+            members.map((user) => (
+              <UserItem
+                key={user._id}
+                user={user}
+                handler={selectMemberHandler}
+                isAdded={selectedMembers.includes(user._id)}
+              />
+            ))
+          )}
         </Stack>
         <Stack direction={"row"} pt={".5rem"} justifyContent={"space-around"}>
           <Button variant="text" color={"error"}>

@@ -205,7 +205,7 @@ const getMyFriends = TryCatch(async (req, res) => {
   }).populate("members", "name avatar");
 
   const friends = chats.map(({ members }) => {
-    const otherUser = getOtherMembers(members, req.user);
+    const otherUser = getOtherMember(members, req.user);
     return {
       _id: otherUser._id,
       name: otherUser.name,
