@@ -11,12 +11,14 @@ import {
 import React, { useState } from "react";
 import { sampleUsers } from "../../constants/sampleData";
 import UserItem from "../shared/UserItem";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useErrors } from "../../hooks/hook";
 import { useAvailableFriendsQuery } from "../../redux/api/api";
 // ! Use Alt + Shift + O shortcut to remove unneccesary imports
 const NewGroupDialog = () => {
   const dispatch = useDispatch();
+
+  const { isNewGroup } = useSelector((state) => state.misc);
 
   const { isError, isLoading, error, data } = useAvailableFriendsQuery("");
 
@@ -52,10 +54,10 @@ const NewGroupDialog = () => {
     console.log("submitHandler");
   };
   const closeHandler = () => {
-    console.log("closeHandler");
+    dispatch(setIsNewGroup(false));
   };
   return (
-    <Dialog open>
+    <Dialog onClose={closeHandler} open={isNewGroup}>
       <Stack p={{ xs: "1rem", sm: "2rem" }} width={"25rem"}>
         <DialogTitle textAlign={"center"}>New Group</DialogTitle>
         <TextField
@@ -72,7 +74,7 @@ const NewGroupDialog = () => {
           {isLoading ? (
             <Skeleton />
           ) : (
-            members.map((user) => (
+            data?.friends?.map((user) => (
               <UserItem
                 key={user._id}
                 user={user}
