@@ -12,14 +12,19 @@ import React, { useState } from "react";
 import { sampleUsers } from "../../constants/sampleData";
 import UserItem from "../shared/UserItem";
 import { useDispatch, useSelector } from "react-redux";
-import { useErrors } from "../../hooks/hook";
+import { useAsyncMutation, useErrors } from "../../hooks/hook";
 import {
   setIsMobile,
   setIsNewGroup,
   setIsNotification,
   setIsSearch,
 } from "../../redux/reducers/misc";
-import { useAvailableFriendsQuery } from "../../redux/api/api";
+import {
+  useAvailableFriendsQuery,
+  useNewGroupMutation,
+} from "../../redux/api/api";
+import toast from "react-hot-toast";
+import { useAsyncError } from "react-router-dom";
 // ! Use Alt + Shift + O shortcut to remove unneccesary imports
 const NewGroupDialog = () => {
   const dispatch = useDispatch();
@@ -27,6 +32,8 @@ const NewGroupDialog = () => {
   const { isNewGroup } = useSelector((state) => state.misc);
 
   const { isError, isLoading, error, data } = useAvailableFriendsQuery("");
+
+  const [newGroup, isLoadingNewGroup] = useAsyncMutation(useNewGroupMutation());
 
   const groupName = useInputValidation("");
 
@@ -57,8 +64,18 @@ const NewGroupDialog = () => {
   };
   console.log(selectedMembers);
   const submitHandler = () => {
-    console.log("submitHandler");
+    if (!groupName.value) return toast.error("Group name is required");
+
+    if (selectedMembers.length < 2)
+      return toast.error("You need to add atleast 3 members");
+    // Creating groupt
+    newGroup("Creating New Group", {
+      name: groupName.value,
+      members: selectedMembers,
+    });
+    closeHandler();
   };
+
   const closeHandler = () => {
     dispatch(setIsNewGroup(false));
   };
@@ -91,10 +108,20 @@ const NewGroupDialog = () => {
           )}
         </Stack>
         <Stack direction={"row"} pt={".5rem"} justifyContent={"space-around"}>
-          <Button variant="text" color={"error"}>
+          <Button
+            variant="text"
+            color={"error"}
+            size="large"
+            onClick={closeHandler}
+          >
             Cancel
           </Button>
-          <Button variant="contained" onClick={submitHandler}>
+          <Button
+            variant="contained"
+            size="large"
+            onClick={submitHandler}
+            disabled={isLoadingNewGroup}
+          >
             Create
           </Button>
         </Stack>
