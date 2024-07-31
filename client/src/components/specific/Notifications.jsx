@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setIsNotification } from "../../redux/reducers/misc";
 
 // |========================================================-=-
-const NotificationDialog = () => {
+const Notifications = () => {
   const dispatch = useDispatch();
   const { isNotification } = useSelector((state) => state.misc);
   const { isLoading, data, error, isError } = useGetNotificationsQuery();
@@ -118,4 +118,4 @@ const NotificationItem = memo(({ sender, _id, handler }) => {
     </ListItem>
   );
 });
-export default NotificationDialog;
+export default Notifications;

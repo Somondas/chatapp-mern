@@ -33,7 +33,7 @@ import {
 import { resetNotificationCount } from "../../redux/reducers/chat";
 const SearchDialog = lazy(() => import("../specific/Search"));
 const NewGroupDialog = lazy(() => import("../specific/NewGroup"));
-const NotificationDialog = lazy(() => import("../specific/Notifications"));
+const Notifications = lazy(() => import("../specific/Notifications"));
 
 // |__________________________________________________________
 const Header = () => {
@@ -145,7 +145,7 @@ const Header = () => {
       )}
       {isNotification && (
         <Suspense fallback={<Backdrop open />}>
-          <NotificationDialog />
+          <Notifications />
         </Suspense>
       )}
       {isNewGroup && (

@@ -25,7 +25,7 @@ const api = createApi({
 
     sendFriendRequest: builder.mutation({
       query: (data) => ({
-        url: "user/sendrequest",
+        url: "user/send-request",
         method: "PUT",
         credentials: "include",
         body: data,
@@ -43,7 +43,7 @@ const api = createApi({
 
     acceptFriendRequest: builder.mutation({
       query: (data) => ({
-        url: "user/acceptrequest",
+        url: "user/accept-request",
         method: "PUT",
         credentials: "include",
         body: data,
