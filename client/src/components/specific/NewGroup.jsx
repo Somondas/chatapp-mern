@@ -10,12 +10,28 @@ import {
 import React, { useState } from "react";
 import { sampleUsers } from "../../constants/sampleData";
 import UserItem from "../shared/UserItem";
+import { useDispatch } from "react-redux";
+import { useErrors } from "../../hooks/useErrors";
+import { useAvailableFriendsQuery } from "../../redux/api/api";
 // ! Use Alt + Shift + O shortcut to remove unneccesary imports
 const NewGroupDialog = () => {
+  const dispatch = useDispatch();
+
+  const { isError, isLoading, error, data } = useAvailableFriendsQuery("");
+
   const groupName = useInputValidation("");
 
   const [members, setMembers] = useState(sampleUsers);
   const [selectedMembers, setSelectedMembers] = useState([]);
+
+  const errors = [
+    {
+      isError,
+      error,
+    },
+  ];
+
+  useErrors(errors);
 
   const selectMemberHandler = (id) => {
     // setMembers((prev) =>
