@@ -13,6 +13,12 @@ import { sampleUsers } from "../../constants/sampleData";
 import UserItem from "../shared/UserItem";
 import { useDispatch, useSelector } from "react-redux";
 import { useErrors } from "../../hooks/hook";
+import {
+  setIsMobile,
+  setIsNewGroup,
+  setIsNotification,
+  setIsSearch,
+} from "../../redux/reducers/misc";
 import { useAvailableFriendsQuery } from "../../redux/api/api";
 // ! Use Alt + Shift + O shortcut to remove unneccesary imports
 const NewGroupDialog = () => {

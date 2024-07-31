@@ -26,6 +26,7 @@ import axios from "axios";
 import { server } from "../../constants/config";
 import {
   setIsMobile,
+  setIsNewGroup,
   setIsNotification,
   setIsSearch,
 } from "../../redux/reducers/misc";
@@ -38,9 +39,10 @@ const NotificationDialog = lazy(() => import("../specific/Notifications"));
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [isNewGroup, setIsNewGroup] = useState(false);
 
-  const { isSearch, isNotification } = useSelector((state) => state.misc);
+  const { isSearch, isNotification, isNewGroup } = useSelector(
+    (state) => state.misc
+  );
 
   const { notificationCount } = useSelector((state) => state.chat);
   // >> Handling Functions------------------------------
@@ -51,8 +53,8 @@ const Header = () => {
     dispatch(setIsSearch(true));
   };
   const openNewGroup = () => {
-    console.log("openNewGroup");
-    setIsNewGroup((prev) => !prev);
+    dispatch(setIsNewGroup(true));
+    // setIsNewGroup((prev) => !prev);
   };
   const navigateToGroup = () => {
     navigate("/groups");
