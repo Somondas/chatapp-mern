@@ -12,35 +12,25 @@ import React, { useState } from "react";
 import { sampleUsers } from "../../constants/sampleData";
 import UserItem from "../shared/UserItem";
 import { useDispatch, useSelector } from "react-redux";
-import { useAsyncMutation, useErrors } from "../../hooks/hook";
-import {
-  setIsMobile,
-  setIsNewGroup,
-  setIsNotification,
-  setIsSearch,
-} from "../../redux/reducers/misc";
 import {
   useAvailableFriendsQuery,
   useNewGroupMutation,
 } from "../../redux/api/api";
+import { useAsyncMutation, useErrors } from "../../hooks/hook";
+import { setIsNewGroup } from "../../redux/reducers/misc";
 import toast from "react-hot-toast";
-import { useAsyncError } from "react-router-dom";
-// ! Use Alt + Shift + O shortcut to remove unneccesary imports
-const NewGroupDialog = () => {
+
+const NewGroup = () => {
+  const { isNewGroup } = useSelector((state) => state.misc);
   const dispatch = useDispatch();
 
-  const { isNewGroup } = useSelector((state) => state.misc);
-
-  const { isError, isLoading, error, data } = useAvailableFriendsQuery("");
-
-  const [newGroup, isLoadingNewGroup] = useAsyncMutation(useNewGroupMutation());
+  const { isError, isLoading, error, data } = useAvailableFriendsQuery();
+  const [newGroup, isLoadingNewGroup] = useAsyncMutation(useNewGroupMutation);
 
   const groupName = useInputValidation("");
 
-  const [members, setMembers] = useState(sampleUsers);
   const [selectedMembers, setSelectedMembers] = useState([]);
 
-  console.log(data);
   const errors = [
     {
       isError,
@@ -51,66 +41,65 @@ const NewGroupDialog = () => {
   useErrors(errors);
 
   const selectMemberHandler = (id) => {
-    // setMembers((prev) =>
-    //   prev.map((user) =>
-    //     user._id === id ? { ...user, isAdded: !user.isAdded } : user
-    //   )
-    // );
     setSelectedMembers((prev) =>
       prev.includes(id)
-        ? prev.filter((currentElement) => currentElement !== id)
+        ? prev.filter((currElement) => currElement !== id)
         : [...prev, id]
     );
   };
-  console.log(selectedMembers);
+
   const submitHandler = () => {
     if (!groupName.value) return toast.error("Group name is required");
 
     if (selectedMembers.length < 2)
-      return toast.error("You need to add atleast 3 members");
-    // Creating groupt
-    newGroup("Creating New Group", {
+      return toast.error("Please Select Atleast 3 Members");
+
+    newGroup("Creating New Group...", {
       name: groupName.value,
       members: selectedMembers,
     });
+
     closeHandler();
   };
 
   const closeHandler = () => {
     dispatch(setIsNewGroup(false));
   };
+
   return (
     <Dialog onClose={closeHandler} open={isNewGroup}>
-      <Stack p={{ xs: "1rem", sm: "2rem" }} width={"25rem"}>
-        <DialogTitle textAlign={"center"}>New Group</DialogTitle>
+      <Stack p={{ xs: "1rem", sm: "3rem" }} width={"25rem"} spacing={"2rem"}>
+        <DialogTitle textAlign={"center"} variant="h4">
+          New Group
+        </DialogTitle>
+
         <TextField
           label="Group Name"
           value={groupName.value}
           onChange={groupName.changeHandler}
         />
 
-        <Typography variant="h6" pt={"1rem"}>
-          Members
-        </Typography>
+        <Typography variant="body1">Members</Typography>
 
-        <Stack pt={"1rem"}>
+        <Stack>
           {isLoading ? (
             <Skeleton />
           ) : (
-            data?.friends?.map((user) => (
+            data?.friends?.map((i) => (
               <UserItem
-                key={user._id}
-                user={user}
+                user={i}
+                key={i._id}
                 handler={selectMemberHandler}
-                isAdded={selectedMembers.includes(user._id)}
+                isAdded={selectedMembers.includes(i._id)}
               />
             ))
           )}
         </Stack>
-        <Stack direction={"row"} pt={".5rem"} justifyContent={"space-around"}>
+
+        <Stack direction={"row"} justifyContent={"space-evenly"}>
           <Button
             variant="text"
-            color={"error"}
+            color="error"
             size="large"
             onClick={closeHandler}
           >
@@ -130,4 +119,4 @@ const NewGroupDialog = () => {
   );
 };
 
-export default NewGroupDialog;
+export default NewGroup;

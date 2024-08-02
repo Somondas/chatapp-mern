@@ -221,7 +221,7 @@ const Groups = () => {
           }}
           sm={4}
         >
-          <GroupsList myGroups={samepleChats} chatId={chatId} />
+          <GroupsList myGroups={myGroups?.data?.groups} chatId={chatId} />
         </Grid>
         <Grid
           item
