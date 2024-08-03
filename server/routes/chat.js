@@ -9,9 +9,9 @@ import {
   getMyGroups,
   leaveGroup,
   newGroupChat,
-  removeMembers,
+  removeMember,
   renameGroup,
-  sendAttachment,
+  sendAttachments,
 } from "../controllers/chat.js";
 import { attachmentsMulter } from "../middlewares/multer.js";
 import {
@@ -42,7 +42,7 @@ app.delete(
   "/remove-member",
   removeMemberValidator(),
   validateHandler,
-  removeMembers
+  removeMember
 );
 
 app.delete("/leave/:id", chatIdValidator(), validateHandler, leaveGroup);
@@ -54,7 +54,7 @@ app.post(
   attachmentsMulter,
   sendAttachmentsValidator(),
   validateHandler,
-  sendAttachment
+  sendAttachments
 );
 
 app.get("/message/:id", getMessagesValidator(), validateHandler, getMessages);

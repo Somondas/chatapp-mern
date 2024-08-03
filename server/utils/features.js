@@ -70,7 +70,7 @@ const uploadFilesToCloudinary = async (files = []) => {
     throw new Error("Error uploading file to cloudinary ", error);
   }
 };
-const deleteFilesFromCloudinary = async (public_ids) => {
+const deletFilesFromCloudinary = async (public_ids) => {
   // Delete Files
 };
 export {
@@ -78,6 +78,6 @@ export {
   sendToken,
   cookieOptions,
   emitEvent,
-  deleteFilesFromCloudinary,
+  deletFilesFromCloudinary,
   uploadFilesToCloudinary,
 };
