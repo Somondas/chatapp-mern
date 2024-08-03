@@ -1,89 +1,119 @@
-import React, { useCallback, useEffect } from "react";
-import Header from "./Header";
-import Title from "../shared/Title";
 import { Drawer, Grid, Skeleton } from "@mui/material";
-import ChatList from "../specific/ChatList";
-import { samepleChats } from "../../constants/sampleData";
-import { useParams } from "react-router-dom";
-import Profile from "../specific/Profile";
-import { useMyChatsQuery } from "../../redux/api/api";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setIsMobile } from "../../redux/reducers/misc";
-import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  NEW_MESSAGE_ALERT,
+  NEW_REQUEST,
+  ONLINE_USERS,
+  REFETCH_CHATS,
+} from "../../constants/events";
 import { useErrors, useSocketEvents } from "../../hooks/hook";
-import { NEW_MESSAGE_ALERT, NEW_REQUEST } from "../../constants/events";
-import { incrementNotification } from "../../redux/reducers/chat";
-import { getSocket } from "../../socket";
 import { getOrSaveFromStorage } from "../../lib/features";
-// import { getSockets } from "../../../../server/lib/helper";
+import { useMyChatsQuery } from "../../redux/api/api";
+import {
+  incrementNotification,
+  setNewMessagesAlert,
+} from "../../redux/reducers/chat";
+import {
+  setIsDeleteMenu,
+  setIsMobile,
+  setSelectedDeleteChat,
+} from "../../redux/reducers/misc";
+import { getSocket } from "../../socket";
+import DeleteChatMenu from "../dialogs/DeleteChatMenu.jsx";
+import Title from "../shared/Title";
+import ChatList from "../specific/ChatList";
+import Profile from "../specific/Profile";
+import Header from "./Header";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
     const params = useParams();
-    const chatId = params.chatId;
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const socket = getSocket();
 
-    // console.log(socket);
+    const chatId = params.chatId;
+    const deleteMenuAnchor = useRef(null);
+
+    const [onlineUsers, setOnlineUsers] = useState([]);
+
     const { isMobile } = useSelector((state) => state.misc);
     const { user } = useSelector((state) => state.auth);
-    const { newMessageAlert } = useSelector((state) => state.chat);
-
-    console.log("newMsgAlert", newMessageAlert);
+    const { newMessagesAlert } = useSelector((state) => state.chat);
 
     const { isLoading, data, isError, error, refetch } = useMyChatsQuery("");
+
     useErrors([{ isError, error }]);
 
     useEffect(() => {
-      getOrSaveFromStorage({
-        key: NEW_MESSAGE_ALERT,
-        value: newMessageAlert,
-        get: true,
-      });
-    }, [newMessageAlert]);
-    // console.log(isMobile);
+      getOrSaveFromStorage({ key: NEW_MESSAGE_ALERT, value: newMessagesAlert });
+    }, [newMessagesAlert]);
 
-    const handleDeleteChat = (e, _id, groupChat) => {
-      e.preventDefault();
-      console.log("Delete Chat", _id, groupChat);
-    };
-    const handleMobileClose = () => {
-      // console.log("Mobile");
-      dispatch(setIsMobile(false));
+    const handleDeleteChat = (e, chatId, groupChat) => {
+      dispatch(setIsDeleteMenu(true));
+      dispatch(setSelectedDeleteChat({ chatId, groupChat }));
+      deleteMenuAnchor.current = e.currentTarget;
     };
 
-    const newMessageAlertHandler = useCallback((data) => {
-      const sds = data.chatId;
-      console.log(sds);
-    }, []);
+    const handleMobileClose = () => dispatch(setIsMobile(false));
 
-    const newRequestHandler = useCallback(() => {
+    const newMessageAlertListener = useCallback(
+      (data) => {
+        if (data.chatId === chatId) return;
+        dispatch(setNewMessagesAlert(data));
+      },
+      [chatId]
+    );
+
+    const newRequestListener = useCallback(() => {
       dispatch(incrementNotification());
     }, [dispatch]);
 
+    const refetchListener = useCallback(() => {
+      refetch();
+      navigate("/");
+    }, [refetch, navigate]);
+
+    const onlineUsersListener = useCallback((data) => {
+      setOnlineUsers(data);
+    }, []);
+
     const eventHandlers = {
-      [NEW_MESSAGE_ALERT]: newMessageAlertHandler,
-      [NEW_REQUEST]: newRequestHandler,
+      [NEW_MESSAGE_ALERT]: newMessageAlertListener,
+      [NEW_REQUEST]: newRequestListener,
+      [REFETCH_CHATS]: refetchListener,
+      [ONLINE_USERS]: onlineUsersListener,
     };
 
     useSocketEvents(socket, eventHandlers);
+
     return (
-      <div>
+      <>
         <Title />
         <Header />
+
+        <DeleteChatMenu
+          dispatch={dispatch}
+          deleteMenuAnchor={deleteMenuAnchor}
+        />
+
         {isLoading ? (
           <Skeleton />
         ) : (
-          <Drawer open={isMobile} onCanPlay={handleMobileClose}>
+          <Drawer open={isMobile} onClose={handleMobileClose}>
             <ChatList
               w="70vw"
               chats={data?.chats}
               chatId={chatId}
               handleDeleteChat={handleDeleteChat}
-              newMessagesAlert={newMessageAlert}
+              newMessagesAlert={newMessagesAlert}
+              onlineUsers={onlineUsers}
             />
           </Drawer>
         )}
+
         <Grid container height={"calc(100vh - 4rem)"}>
           <Grid
             item
@@ -101,13 +131,15 @@ const AppLayout = () => (WrappedComponent) => {
                 chats={data?.chats}
                 chatId={chatId}
                 handleDeleteChat={handleDeleteChat}
-                newMessagesAlert={newMessageAlert}
+                newMessagesAlert={newMessagesAlert}
+                onlineUsers={onlineUsers}
               />
             )}
           </Grid>
-          <Grid item xs={12} md={5} sm={8} lg={6} height={"100%"}>
+          <Grid item xs={12} sm={8} md={5} lg={6} height={"100%"}>
             <WrappedComponent {...props} chatId={chatId} user={user} />
           </Grid>
+
           <Grid
             item
             md={4}
@@ -122,7 +154,7 @@ const AppLayout = () => (WrappedComponent) => {
             <Profile user={user} />
           </Grid>
         </Grid>
-      </div>
+      </>
     );
   };
 };
