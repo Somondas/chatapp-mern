@@ -1,10 +1,15 @@
 import { useInputValidation } from "6pp";
 import { Button, Container, Paper, TextField, Typography } from "@mui/material";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
+import { adminLogin } from "../../redux/thunks/admin";
 
 const AdminLogin = () => {
-  const isAdmin = true;
+  // const isAdmin = true;
+
+  const { isAdmin } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   // -> State variables----------------------------------
 
   const secretKey = useInputValidation("");
@@ -13,6 +18,7 @@ const AdminLogin = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
+    dispatch(adminLogin(secretKey.value));
   };
 
   if (isAdmin) {

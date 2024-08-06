@@ -2,6 +2,9 @@ import { TryCatch } from "../middlewares/error.js";
 import { Chat } from "../models/chat.js";
 import { User } from "../models/user.js";
 import { Message } from "../models/message.js";
+import { adminSecretKey } from "../app.js";
+import jwt from "jsonwebtoken";
+import { cookieOptions } from "../utils/features.js";
 
 // >> Get All Users Controller---------------------------------
 const allUsers = TryCatch(async (req, res) => {
