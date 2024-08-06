@@ -17,9 +17,10 @@ import {
   styled,
 } from "@mui/material";
 import React, { useState } from "react";
-import { Link as LinkComponent, Navigate } from "react-router-dom";
+import { Link as LinkComponent, Navigate, useLocation } from "react-router-dom";
 import { grayColor, matBlack } from "../../constants/color";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { adminLogout } from "../../redux/thunks/admin";
 
 // >> Styled Component
 const Link = styled(LinkComponent)`
@@ -57,7 +58,11 @@ const adminTabs = [
 
 // >> SideBar
 const SideBar = ({ w = "100&" }) => {
-  const logoutHandler = () => {};
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const logoutHandler = () => {
+    dispatch(adminLogout());
+  };
   return (
     <Stack width={w} direction={"column"} p={"3rem"} spacing={"3rem"}>
       <Typography variant="h5" textTransform={"uppercase"}>

@@ -1,8 +1,10 @@
+import { useFetchData } from "6pp";
+import { Avatar, Skeleton } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
 import Table from "../../components/shared/Table";
-import { Avatar } from "@mui/material";
-import { dashboardData } from "../../constants/sampleData";
+import { server } from "../../constants/config";
+import { useErrors } from "../../hooks/hook";
 import { transformImage } from "../../lib/features";
 
 const columns = [
@@ -16,16 +18,16 @@ const columns = [
     field: "avatar",
     headerName: "Avatar",
     headerClassName: "table-header",
-    width: 200,
+    width: 150,
     renderCell: (params) => (
       <Avatar alt={params.row.name} src={params.row.avatar} />
     ),
   },
+
   {
     field: "name",
     headerName: "Name",
     headerClassName: "table-header",
-
     width: 200,
   },
   {
@@ -38,7 +40,7 @@ const columns = [
     field: "friends",
     headerName: "Friends",
     headerClassName: "table-header",
-    width: 200,
+    width: 150,
   },
   {
     field: "groups",
@@ -46,36 +48,41 @@ const columns = [
     headerClassName: "table-header",
     width: 200,
   },
-  // {
-  //   field: "createdAt",
-  //   headerName: "Created At",
-  //   headerClassName: "table-header",
-  //   width: 200,
-  //   renderCell: (params) => (
-  //     <Avatar alt={params.row.name} src={params.row.avatar} />
-  //   ),
-  // },
-  // {
-  //   field: "updatedAt",
-  //   headerName: "Updated At",
-  //   headerClassName: "table-header",
-  //   width: 200,
-  // },
 ];
 const UserManagement = () => {
+  const { loading, data, error } = useFetchData(
+    `${server}/api/v1/admin/users`,
+    "dashboard-users"
+  );
+
+  useErrors([
+    {
+      isError: error,
+      error: error,
+    },
+  ]);
+
   const [rows, setRows] = useState([]);
+
   useEffect(() => {
-    setRows(
-      dashboardData.users.map((user) => ({
-        ...user,
-        id: user._id,
-        avatar: transformImage(user.avatar, 50),
-      }))
-    );
-  }, []);
+    if (data) {
+      setRows(
+        data.users.map((i) => ({
+          ...i,
+          id: i._id,
+          avatar: transformImage(i.avatar, 50),
+        }))
+      );
+    }
+  }, [data]);
+
   return (
     <AdminLayout>
-      <Table heading={"All Users"} columns={columns} rows={rows} />
+      {loading ? (
+        <Skeleton height={"100vh"} />
+      ) : (
+        <Table heading={"All Users"} columns={columns} rows={rows} />
+      )}
     </AdminLayout>
   );
 };
