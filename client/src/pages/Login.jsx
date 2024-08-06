@@ -52,7 +52,7 @@ const Login = () => {
         },
         config
       );
-      dispatch(userExists(true));
+      dispatch(userExists(data.user));
       toast.success(data.message);
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong");
@@ -80,7 +80,7 @@ const Login = () => {
         formData,
         config
       );
-      dispatch(userExists(true));
+      dispatch(userExists(data.user));
       toast.success(data.message);
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong");
